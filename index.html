@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TarabBladi - Arabic DJ Record Pool</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="8" width="2" height="8" fill="#e2b764"/>
+                    <rect x="6" y="4" width="2" height="16" fill="#e2b764"/>
+                    <rect x="10" y="10" width="2" height="4" fill="#e2b764"/>
+                    <rect x="14" y="2" width="2" height="20" fill="#e2b764"/>
+                    <rect x="18" y="6" width="2" height="12" fill="#e2b764"/>
+                </svg>
+                <div class="logo-text">
+                    <span class="brand-name">TARABBLADI</span>
+                    <span class="brand-sub">ARABIC DJ RECORD POOL</span>
+                </div>
+            </div>
+            
+            <ul class="nav-links">
+                <li><a href="#" class="active">HOME</a></li>
+                <li><a href="#">BROWSE</a></li>
+                <li><a href="#">CHARTS</a></li>
+                <li><a href="#">BLOG</a></li>
+                <li><a href="#">PRICING</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <a href="#" class="btn-login">LOG IN</a>
+                <a href="#" class="btn-signup">SIGN UP</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-bg">
+            <!-- Background Image: Assuming the user will place their photo here, but providing a fallback via CSS -->
+            <img src="image/hero-bg.jpg" alt="" class="bg-img" onerror="this.style.display='none'">
+            <div class="hero-overlay"></div>
+        </div>
+        
+        <div class="hero-content">
+            <h1>THE SOUND<br>OF OUR CULTURE<br><span class="highlight">FOR YOUR CROWD</span></h1>
+            <p>Exclusive Arabic edits, remixes, and DJ tools<br>made for professional DJs.</p>
+            
+            <div class="hero-buttons">
+                <a href="#" class="btn-primary">START FREE TRIAL</a>
+                <a href="#" class="btn-outline">BROWSE MUSIC</a>
+            </div>
+
+            <div class="hero-features">
+                <div class="feature-item">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    <span>INSTANT<br>DOWNLOAD</span>
+                </div>
+                <div class="feature-item">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    <span>HIGH QUALITY<br>WAV & MP3</span>
+                </div>
+                <div class="feature-item">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path></svg>
+                    <span>DJ<br>FRIENDLY</span>
+                </div>
+                <div class="feature-item">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    <span>WEEKLY<br>UPDATES</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="search-container">
+            <div class="search-bar">
+                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" placeholder="Search tracks, artists, genres...">
+                <button class="btn-filters">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                    FILTERS
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Browse By Genre -->
+    <section class="genres-section">
+        <div class="section-header">
+            <h2>BROWSE BY GENRE</h2>
+            <a href="#" class="view-all">VIEW ALL &rarr;</a>
+        </div>
+        <div class="genre-grid">
+            <div class="genre-card">
+                <img src="https://images.unsplash.com/photo-1539667468225-eebb663053e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Arabic House">
+                <div class="genre-overlay"></div>
+                <h3>ARABIC HOUSE</h3>
+            </div>
+            <div class="genre-card">
+                <img src="https://images.unsplash.com/photo-1548013146-72479768bada?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Afro Arabic">
+                <div class="genre-overlay"></div>
+                <h3>AFRO ARABIC</h3>
+            </div>
+            <div class="genre-card">
+                <img src="https://images.unsplash.com/photo-1587325251648-52fb38407ee8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Oriental Edits">
+                <div class="genre-overlay"></div>
+                <h3>ORIENTAL EDITS</h3>
+            </div>
+            <div class="genre-card">
+                <img src="https://images.unsplash.com/photo-1621360841013-c76831f4784a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Dabke Remixes">
+                <div class="genre-overlay"></div>
+                <h3>DABKE REMIXES</h3>
+            </div>
+            <div class="genre-card">
+                <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Wedding">
+                <div class="genre-overlay"></div>
+                <h3>WEDDING</h3>
+            </div>
+            <div class="genre-card">
+                <img src="https://images.unsplash.com/photo-1545128485-c400e7702796?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Club Bangers">
+                <div class="genre-overlay"></div>
+                <h3>CLUB BANGERS</h3>
+            </div>
+        </div>
+    </section>
+
+    <!-- New Releases -->
+    <section class="releases-section">
+        <div class="section-header">
+            <h2>NEW RELEASES</h2>
+            <a href="#" class="view-all">VIEW ALL &rarr;</a>
+        </div>
+        <div class="track-list">
+            <!-- Track 1 -->
+            <div class="track-row">
+                <div class="track-cover-play">
+                    <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixlib=rb-4.0.3&w=100&q=80" alt="Cover">
+                    <button class="play-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+                </div>
+                <div class="track-info">
+                    <h4>Enta Eih</h4>
+                    <p>Amr Diab (DJL Extended)</p>
+                </div>
+                <div class="track-meta">128 BPM</div>
+                <div class="track-meta">G Minor</div>
+                <div class="track-meta">Arabic House</div>
+                <div class="track-waveform">
+                    <div class="waveform-mockup"></div>
+                </div>
+                <div class="track-actions">
+                    <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+                    <button class="icon-btn"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                </div>
+            </div>
+            
+            <!-- Track 2 -->
+            <div class="track-row">
+                <div class="track-cover-play">
+                    <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&w=100&q=80" alt="Cover">
+                    <button class="play-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+                </div>
+                <div class="track-info">
+                    <h4>Yalla Habibi</h4>
+                    <p>Mohamed Ramadan (DJ Tony Remix)</p>
+                </div>
+                <div class="track-meta">130 BPM</div>
+                <div class="track-meta">E Minor</div>
+                <div class="track-meta">Afro Arabic</div>
+                <div class="track-waveform">
+                    <div class="waveform-mockup"></div>
+                </div>
+                <div class="track-actions">
+                    <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+                    <button class="icon-btn"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                </div>
+            </div>
+
+            <!-- Track 3 -->
+            <div class="track-row">
+                <div class="track-cover-play">
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&w=100&q=80" alt="Cover">
+                    <button class="play-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+                </div>
+                <div class="track-info">
+                    <h4>Baddi Eshootak</h4>
+                    <p>Nancy Ajram (Rodge Remix)</p>
+                </div>
+                <div class="track-meta">118 BPM</div>
+                <div class="track-meta">D Minor</div>
+                <div class="track-meta">Oriental Edit</div>
+                <div class="track-waveform">
+                    <div class="waveform-mockup"></div>
+                </div>
+                <div class="track-actions">
+                    <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+                    <button class="icon-btn"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                </div>
+            </div>
+
+            <!-- Track 4 -->
+            <div class="track-row">
+                <div class="track-cover-play">
+                    <img src="https://images.unsplash.com/photo-1493225457124-a1a2a5f5f9af?ixlib=rb-4.0.3&w=100&q=80" alt="Cover">
+                    <button class="play-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+                </div>
+                <div class="track-info">
+                    <h4>Law Hobna</h4>
+                    <p>Elissa (DJ Fadi Remix)</p>
+                </div>
+                <div class="track-meta">124 BPM</div>
+                <div class="track-meta">A Minor</div>
+                <div class="track-meta">Arabic House</div>
+                <div class="track-waveform">
+                    <div class="waveform-mockup"></div>
+                </div>
+                <div class="track-actions">
+                    <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+                    <button class="icon-btn"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                </div>
+            </div>
+
+            <!-- Track 5 -->
+            <div class="track-row">
+                <div class="track-cover-play">
+                    <img src="https://images.unsplash.com/photo-1516280440502-8610eb675038?ixlib=rb-4.0.3&w=100&q=80" alt="Cover">
+                    <button class="play-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+                </div>
+                <div class="track-info">
+                    <h4>Sah Sah</h4>
+                    <p>El Alfa (Arabic Edit)</p>
+                </div>
+                <div class="track-meta">120 BPM</div>
+                <div class="track-meta">A Minor</div>
+                <div class="track-meta">Club Edit</div>
+                <div class="track-waveform">
+                    <div class="waveform-mockup"></div>
+                </div>
+                <div class="track-actions">
+                    <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+                    <button class="icon-btn"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="center-btn">
+            <a href="#" class="btn-outline-gold">BROWSE ALL MUSIC</a>
+        </div>
+    </section>
+
+    <!-- Value Props -->
+    <section class="value-props">
+        <div class="prop-item">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="1.5"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+            <div class="prop-text">
+                <h4>EXCLUSIVE EDITS</h4>
+                <p>Only on TarabBladi</p>
+            </div>
+        </div>
+        <div class="prop-item">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+            <div class="prop-text">
+                <h4>SAFE & CLEAN</h4>
+                <p>All tracks DJ safe</p>
+            </div>
+        </div>
+        <div class="prop-item">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <div class="prop-text">
+                <h4>INSTANT ACCESS</h4>
+                <p>Download instantly</p>
+            </div>
+        </div>
+        <div class="prop-item">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="1.5"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path></svg>
+            <div class="prop-text">
+                <h4>DJ SUPPORT</h4>
+                <p>We're here for you</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="logo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="2" y="8" width="2" height="8" fill="#e2b764"/>
+                        <rect x="6" y="4" width="2" height="16" fill="#e2b764"/>
+                        <rect x="10" y="10" width="2" height="4" fill="#e2b764"/>
+                        <rect x="14" y="2" width="2" height="20" fill="#e2b764"/>
+                        <rect x="18" y="6" width="2" height="12" fill="#e2b764"/>
+                    </svg>
+                    <span class="brand-name">TARABBLADI</span>
+                </div>
+                <p>The leading Arabic DJ record pool.<br>Exclusive edits, high quality,<br>and DJ friendly.</p>
+                <div class="social-links">
+                    <a href="#"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
+                    <a href="#"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg></a>
+                    <a href="#"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg></a>
+                    <a href="#"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.5 14L8 13.5l1.5-1.5 1.5 1.5 3-3 1.5 1.5-4.5 4.5z"></path></svg></a>
+                </div>
+            </div>
+            
+            <div class="footer-links">
+                <h4>COMPANY</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-links">
+                <h4>SUPPORT</h4>
+                <ul>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Pricing</a></li>
+                    <li><a href="#">Terms</a></li>
+                    <li><a href="#">Privacy</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-newsletter">
+                <h4>NEWSLETTER</h4>
+                <p>Stay updated with new releases<br>and exclusive offers.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Enter your email">
+                    <button type="submit">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 TarabBladi. All Rights Reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
