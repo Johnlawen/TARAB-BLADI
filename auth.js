@@ -64,7 +64,8 @@ if (signupForm) {
         
         const emailInput = signupForm.querySelector('input[type="email"]');
         const passwordInput = signupForm.querySelector('input[type="password"]');
-        const nameInput = signupForm.querySelector('input[type="text"]');
+        const fullNameInput = document.getElementById('full-name');
+        const usernameInput = document.getElementById('dj-username');
         
         if (!emailInput || !passwordInput) return;
         
@@ -78,7 +79,8 @@ if (signupForm) {
             password: passwordInput.value,
             options: {
                 data: {
-                    full_name: nameInput ? nameInput.value : ''
+                    full_name: fullNameInput ? fullNameInput.value : '',
+                    username: usernameInput ? usernameInput.value : ''
                 }
             }
         });
