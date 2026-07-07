@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charts - TarabBladi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="charts-page">
+    <!-- Navigation -->
+    <nav class="navbar solid-nav">
+        <div class="nav-container">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="8" width="2" height="8" fill="#e2b764"/>
+                    <rect x="6" y="4" width="2" height="16" fill="#e2b764"/>
+                    <rect x="10" y="10" width="2" height="4" fill="#e2b764"/>
+                    <rect x="14" y="2" width="2" height="20" fill="#e2b764"/>
+                    <rect x="18" y="6" width="2" height="12" fill="#e2b764"/>
+                </svg>
+                <div class="logo-text">
+                    <span class="brand-name">TARABBLADI</span>
+                    <span class="brand-sub">ARABIC DJ RECORD POOL</span>
+                </div>
+            </div>
+            
+            <ul class="nav-links">
+                <li><a href="index.html">HOME</a></li>
+                <li><a href="browse.html">BROWSE</a></li>
+                <li><a href="charts.html" class="active">CHARTS</a></li>
+                <li><a href="#">BLOG</a></li>
+                <li><a href="#">PRICING</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <a href="#" class="btn-login">LOG IN</a>
+                <a href="#" class="btn-signup">SIGN UP</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Charts Header -->
+    <header class="charts-hero">
+        <div class="charts-hero-bg">
+            <img src="https://images.unsplash.com/photo-1571266028243-3716f02d2d2e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="DJ Background">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="charts-hero-content">
+            <h1>CHARTS</h1>
+            <div class="charts-hero-divider">
+                <svg width="60" height="12" viewBox="0 0 60 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect y="4" width="2" height="4" fill="#e2b764"/>
+                    <rect x="4" y="2" width="2" height="8" fill="#e2b764"/>
+                    <rect x="8" y="0" width="2" height="12" fill="#e2b764"/>
+                    <rect x="12" y="2" width="2" height="8" fill="#e2b764"/>
+                    <rect x="16" y="4" width="44" height="4" fill="#e2b764"/>
+                </svg>
+            </div>
+            <p>Discover the most downloaded<br>tracks by DJs this week.</p>
+        </div>
+        
+        <div class="charts-tabs-bar">
+            <div class="charts-tabs">
+                <button class="charts-tab active">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+                    TOP 100
+                </button>
+                <button class="charts-tab">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                    TOP DOWNLOADS
+                </button>
+                <button class="charts-tab">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                    TRENDING
+                </button>
+                <button class="charts-tab">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                    NEW RELEASES
+                </button>
+            </div>
+            <div class="charts-timeframe">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <select>
+                    <option>This Week</option>
+                    <option>This Month</option>
+                    <option>All Time</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <div class="charts-main-container">
+        <div class="charts-layout">
+            <!-- Main Track List -->
+            <div class="charts-main-list">
+                <div class="charts-table">
+                    <div class="charts-th">
+                        <div class="th-rank">#</div>
+                        <div class="th-track">TRACK</div>
+                        <div class="th-genre">GENRE</div>
+                        <div class="th-bpm">BPM</div>
+                        <div class="th-key">KEY</div>
+                    </div>
+                    
+                    <div class="charts-tbody">
+                        <!-- Rank 1 -->
+                        <div class="charts-row">
+                            <div class="td-rank">
+                                <span class="rank-num text-gold">1</span>
+                                <div class="rank-status">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="#e2b764"><path d="M2 20h20M4 17l1-10 4 3 3-6 3 6 4-3 1 10z"></path></svg>
+                                    <span class="rank-badge new">NEW</span>
+                                </div>
+                            </div>
+                            <div class="td-track">
+                                <div class="track-cover-play">
+                                    <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixlib=rb-4.0.3&w=100&q=80" alt="Cover">
+                                    <button class="play-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+                                </div>
+                                <div class="track-info">
+                                    <h4>Enta Eih</h4>
+                                    <p>Amr Diab (DJL Extended)</p>
+                                </div>
+                            </div>
+                            <div class="td-genre">Afro Arabic</div>
+                            <div class="td-bpm">128</div>
+                            <div class="td-key">G Minor</div>
+                            <div class="td-actions">
+                                <div class="waveform-mockup small"></div>
+                                <span class="track-time">03:45</span>
+                                <button class="icon-btn-border"><svg viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+                                <button class="icon-btn-border"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
+                            </div>
+                        </div>
+
+                        <!-- Rank 2 -->
+                        <div class="charts-row">
+                            <div class="td-rank">
+                                <span class="rank-num">2</span>
+                                <div class="rank-status">
+                                    <span class="rank-change up">2</span>
+                                </div>
+                            </div>
+                            <div class="td-track">
+                                <div class="track-cover-play">
+                                    <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&w=100&q=80" alt="Cover">
+                                    <button class="play-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+                                </div>
+                                <div class="track-info">
+                                    <h4>Yalla Habibi</h4>
+                                    <p>Mohamed Ramadan (DJ Tony Remix)</p>
+                                </div>
+                            </div>
+                            <div class="td-genre">Afro Arabic</div>
+                            <div class="td-bpm">130</div>
+                            <div class="td-key">E Minor</div>
+                            <div class="td-actions">
+                                <div class="waveform-mockup small white"></div>
+                                <span class="track-time">04:02</span>
+                                <button class="icon-btn-border"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+                                <button class="icon-btn-border"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
+                            </div>
+                        </div>
+
+                        <!-- Rank 3 -->
+                        <div class="charts-row">
+                            <div class="td-rank">
+                                <span class="rank-num">3</span>
+                                <div class="rank-status">
+                                    <span class="rank-change down">1</span>
+                                </div>
+                            </div>
+                            <div class="td-track">
+                                <div class="track-cover-play">
+                                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&w=100&q=80" alt="Cover">
+                                    <button class="play-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+                                </div>
+                                <div class="track-info">
+                                    <h4>Baddi Eshofak</h4>
+                                    <p>Nancy Ajram (Rodge Remix)</p>
+                                </div>
+                            </div>
+                            <div class="td-genre">Oriental Edit</div>
+                            <div class="td-bpm">118</div>
+                            <div class="td-key">D Minor</div>
+                            <div class="td-actions">
+                                <div class="waveform-mockup small white"></div>
+                                <span class="track-time">03:38</span>
+                                <button class="icon-btn-border"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+                                <button class="icon-btn-border"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
+                            </div>
+                        </div>
+
+                        <!-- Rank 4 -->
+                        <div class="charts-row">
+                            <div class="td-rank">
+                                <span class="rank-num">4</span>
+                                <div class="rank-status">
+                                    <span class="rank-change up">4</span>
+                                </div>
+                            </div>
+                            <div class="td-track">
+                                <div class="track-cover-play">
+                                    <img src="https://images.unsplash.com/photo-1493225457124-a1a2a5f5f9af?ixlib=rb-4.0.3&w=100&q=80" alt="Cover">
+                                    <button class="play-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+                                </div>
+                                <div class="track-info">
+                                    <h4>Law Hobna</h4>
+                                    <p>Elissa (DJ Fadi Remix)</p>
+                                </div>
+                            </div>
+                            <div class="td-genre">Arabic House</div>
+                            <div class="td-bpm">124</div>
+                            <div class="td-key">A Minor</div>
+                            <div class="td-actions">
+                                <div class="waveform-mockup small white"></div>
+                                <span class="track-time">03:50</span>
+                                <button class="icon-btn-border"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+                                <button class="icon-btn-border"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
+                            </div>
+                        </div>
+
+                        <!-- Rank 5 -->
+                        <div class="charts-row">
+                            <div class="td-rank">
+                                <span class="rank-num">5</span>
+                                <div class="rank-status">
+                                    <span class="rank-change down">2</span>
+                                </div>
+                            </div>
+                            <div class="td-track">
+                                <div class="track-cover-play">
+                                    <img src="https://images.unsplash.com/photo-1516280440502-8610eb675038?ixlib=rb-4.0.3&w=100&q=80" alt="Cover">
+                                    <button class="play-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+                                </div>
+                                <div class="track-info">
+                                    <h4>Sah Sah</h4>
+                                    <p>El Alfa (Arabic Edit)</p>
+                                </div>
+                            </div>
+                            <div class="td-genre">Club Edit</div>
+                            <div class="td-bpm">120</div>
+                            <div class="td-key">A Minor</div>
+                            <div class="td-actions">
+                                <div class="waveform-mockup small white"></div>
+                                <span class="track-time">03:21</span>
+                                <button class="icon-btn-border"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+                                <button class="icon-btn-border"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
+                            </div>
+                        </div>
+
+                        <!-- Rank 6 -->
+                        <div class="charts-row">
+                            <div class="td-rank">
+                                <span class="rank-num">6</span>
+                                <div class="rank-status">
+                                    <span class="rank-change up">3</span>
+                                    <span class="rank-badge new">NEW</span>
+                                </div>
+                            </div>
+                            <div class="td-track">
+                                <div class="track-cover-play">
+                                    <img src="https://images.unsplash.com/photo-1598387181032-a3103a2db5b3?ixlib=rb-4.0.3&w=100&q=80" alt="Cover">
+                                    <button class="play-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+                                </div>
+                                <div class="track-info">
+                                    <h4>Dabke 2024</h4>
+                                    <p>DJ Baloo (Festival Remix)</p>
+                                </div>
+                            </div>
+                            <div class="td-genre">Dabke Remix</div>
+                            <div class="td-bpm">128</div>
+                            <div class="td-key">C Minor</div>
+                            <div class="td-actions">
+                                <div class="waveform-mockup small white"></div>
+                                <span class="track-time">04:15</span>
+                                <button class="icon-btn-border"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+                                <button class="icon-btn-border"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
+                            </div>
+                        </div>
+
+                        <!-- Rank 7 -->
+                        <div class="charts-row">
+                            <div class="td-rank">
+                                <span class="rank-num">7</span>
+                                <div class="rank-status">
+                                    <span class="rank-change up">3</span>
+                                </div>
+                            </div>
+                            <div class="td-track">
+                                <div class="track-cover-play">
+                                    <img src="https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?ixlib=rb-4.0.3&w=100&q=80" alt="Cover">
+                                    <button class="play-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+                                </div>
+                                <div class="track-info">
+                                    <h4>Habibi (Extended)</h4>
+                                    <p>DJL</p>
+                                </div>
+                            </div>
+                            <div class="td-genre">Tech House</div>
+                            <div class="td-bpm">126</div>
+                            <div class="td-key">A Minor</div>
+                            <div class="td-actions">
+                                <div class="waveform-mockup small white"></div>
+                                <span class="track-time">03:48</span>
+                                <button class="icon-btn-border"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+                                <button class="icon-btn-border"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="center-btn" style="margin-top: 32px;">
+                        <button class="btn-outline-gold-small" style="padding: 10px 24px;">VIEW FULL CHARTS</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <aside class="charts-sidebar">
+                <div class="rising-card">
+                    <div class="rising-header">
+                        <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg> TOP RISING</h3>
+                        <a href="#" class="view-all-small">VIEW ALL</a>
+                    </div>
+                    
+                    <div class="rising-list">
+                        <!-- Rising 1 -->
+                        <div class="rising-item">
+                            <div class="rising-track">
+                                <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixlib=rb-4.0.3&w=50&q=80" alt="Cover">
+                                <button class="play-btn-small"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+                                <div class="rising-info">
+                                    <h4>Enta Eih</h4>
+                                    <p>Amr Diab (DJL Extended)</p>
+                                </div>
+                            </div>
+                            <div class="rising-change">
+                                <span class="rank-change up">12</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Rising 2 -->
+                        <div class="rising-item">
+                            <div class="rising-track">
+                                <img src="https://images.unsplash.com/photo-1598387181032-a3103a2db5b3?ixlib=rb-4.0.3&w=50&q=80" alt="Cover">
+                                <button class="play-btn-small"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+                                <div class="rising-info">
+                                    <h4>Dabke 2024</h4>
+                                    <p>DJ Baloo (Festival Remix)</p>
+                                </div>
+                            </div>
+                            <div class="rising-change">
+                                <span class="rank-change up">9</span>
+                            </div>
+                        </div>
+
+                        <!-- Rising 3 -->
+                        <div class="rising-item">
+                            <div class="rising-track">
+                                <img src="https://images.unsplash.com/photo-1533088657620-e2b528a47fb8?ixlib=rb-4.0.3&w=50&q=80" alt="Cover">
+                                <button class="play-btn-small"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+                                <div class="rising-info">
+                                    <h4>Shou Hal Helwa</h4>
+                                    <p>Fairuz (DJL Edit)</p>
+                                </div>
+                            </div>
+                            <div class="rising-change">
+                                <span class="rank-change up">7</span>
+                            </div>
+                        </div>
+
+                        <!-- Rising 4 -->
+                        <div class="rising-item">
+                            <div class="rising-track">
+                                <img src="https://images.unsplash.com/photo-1458560871784-56d23406c091?ixlib=rb-4.0.3&w=50&q=80" alt="Cover">
+                                <button class="play-btn-small"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+                                <div class="rising-info">
+                                    <h4>Aatini Al Naya</h4>
+                                    <p>Wegz (Club Remix)</p>
+                                </div>
+                            </div>
+                            <div class="rising-change">
+                                <span class="rank-change up">6</span>
+                            </div>
+                        </div>
+
+                        <!-- Rising 5 -->
+                        <div class="rising-item">
+                            <div class="rising-track">
+                                <img src="https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?ixlib=rb-4.0.3&w=50&q=80" alt="Cover">
+                                <button class="play-btn-small"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+                                <div class="rising-info">
+                                    <h4>Kol Elly Bihebbouni</h4>
+                                    <p>Amr Diab (Oriental Edit)</p>
+                                </div>
+                            </div>
+                            <div class="rising-change">
+                                <span class="rank-change up">5</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="premium-card tall">
+                    <div class="premium-icon-circle">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="#e2b764" stroke="#e2b764" stroke-width="1"><path d="M2 20h20M4 17l1-10 4 3 3-6 3 6 4-3 1 10z"></path></svg>
+                    </div>
+                    <h4>UNLOCK FULL ACCESS</h4>
+                    <p>Join TarabBladi to download unlimited tracks.</p>
+                    <a href="#" class="btn-primary">START FREE TRIAL</a>
+                </div>
+            </aside>
+        </div>
+        
+        <!-- Features Footer -->
+        <div class="charts-features">
+            <div class="feature-col">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                <div class="f-text">
+                    <h5>INSTANT DOWNLOAD</h5>
+                    <p>Get your tracks instantly</p>
+                </div>
+            </div>
+            <div class="feature-divider"></div>
+            <div class="feature-col">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="1.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                <div class="f-text">
+                    <h5>HIGH QUALITY</h5>
+                    <p>WAV & MP3 320kbps</p>
+                </div>
+            </div>
+            <div class="feature-divider"></div>
+            <div class="feature-col">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+                <div class="f-text">
+                    <h5>DJ FRIENDLY</h5>
+                    <p>Clean edits & intros</p>
+                </div>
+            </div>
+            <div class="feature-divider"></div>
+            <div class="feature-col">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="1.5"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path></svg>
+                <div class="f-text">
+                    <h5>WEEKLY UPDATES</h5>
+                    <p>Fresh exclusive tracks</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
