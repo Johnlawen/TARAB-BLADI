@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - TarabBladi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="signup-page-body">
+    <!-- Auth Header -->
+    <header class="auth-header" style="background: #050505; position: relative; z-index: 10;">
+        <a href="index.html" class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="2" y="8" width="2" height="8" fill="#e2b764"/>
+                <rect x="6" y="4" width="2" height="16" fill="#e2b764"/>
+                <rect x="10" y="10" width="2" height="4" fill="#e2b764"/>
+                <rect x="14" y="2" width="2" height="20" fill="#e2b764"/>
+                <rect x="18" y="6" width="2" height="12" fill="#e2b764"/>
+            </svg>
+            <div class="logo-text">
+                <span class="brand-name">TARABBLADI</span>
+                <span class="brand-sub">ARABIC DJ RECORD POOL</span>
+            </div>
+        </a>
+        <div class="auth-header-right">
+            <span class="text-muted">Already have an account?</span>
+            <a href="login.html" class="btn-outline-gold-small">LOG IN</a>
+        </div>
+    </header>
+
+    <div class="signup-layout">
+        <!-- Left Side -->
+        <div class="signup-left">
+            <div class="signup-image-wrap">
+                <img src="https://images.unsplash.com/photo-1571266028243-3716f02d2d2e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="DJ Background">
+                <div class="signup-image-overlay"></div>
+            </div>
+            
+            <div class="signup-text-content">
+                <h2 class="signup-heading">Join the #1<br><span class="text-gold">Arabic DJ Record Pool</span></h2>
+                <p class="signup-desc">Create your account and get access to exclusive edits, remixes, and DJ tools made for DJs.</p>
+                
+                <div class="signup-features-grid">
+                    <div class="signup-feature-item">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                        <h4>Exclusive Edits</h4>
+                    </div>
+                    <div class="signup-feature-item">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                        <h4>Instant Downloads</h4>
+                    </div>
+                    <div class="signup-feature-item">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path></svg>
+                        <h4>DJ Friendly</h4>
+                    </div>
+                    <div class="signup-feature-item">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        <h4>Trusted by DJs<br>Worldwide</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side -->
+        <div class="signup-right">
+            <div class="auth-card signup-card">
+                <h2 class="auth-title">Create Your Account</h2>
+                <p class="auth-subtitle">Join TarabBladi and take your sets to the next level</p>
+                
+                <div class="about-divider justify-center mb-6" style="display: flex;">
+                    <svg width="60" height="12" viewBox="0 0 60 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect y="4" width="2" height="4" fill="#e2b764"/>
+                        <rect x="4" y="2" width="2" height="8" fill="#e2b764"/>
+                        <rect x="8" y="0" width="2" height="12" fill="#e2b764"/>
+                        <rect x="12" y="2" width="2" height="8" fill="#e2b764"/>
+                        <rect x="16" y="4" width="44" height="4" fill="#e2b764"/>
+                    </svg>
+                </div>
+
+                <form class="auth-form">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <div class="input-icon-wrap">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            <input type="text" placeholder="Enter your full name">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <div class="input-icon-wrap">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                            <input type="email" placeholder="Enter your email">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password</label>
+                        <div class="input-icon-wrap">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                            <input type="password" placeholder="Create a password">
+                            <button type="button" class="password-toggle">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                        </div>
+                        <span class="password-hint">Minimum 8 characters</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <div class="input-icon-wrap">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                            <input type="password" placeholder="Confirm your password">
+                            <button type="button" class="password-toggle">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-checkbox">
+                        <input type="checkbox" id="terms" checked>
+                        <label for="terms">I agree to the <a href="#" class="text-gold">Terms of Service</a> and <a href="#" class="text-gold">Privacy Policy</a></label>
+                    </div>
+
+                    <button type="submit" class="btn-primary" style="width:100%; display:block; text-align:center;">SIGN UP</button>
+                </form>
+
+                <div class="auth-or">
+                    <span>OR</span>
+                </div>
+
+                <div class="social-login-group">
+                    <button class="btn-social">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                        Sign up with Google
+                    </button>
+                    <button class="btn-social">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12c0-5.523-4.477-10-10-10z"/></svg>
+                        Sign up with Apple
+                    </button>
+                    <button class="btn-social">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2" xmlns="http://www.w3.org/2000/svg"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        Sign up with Facebook
+                    </button>
+                </div>
+                
+                <div class="secure-note">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+                    <span>Your data is 100% secure and will never be shared.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content" style="max-width: 1400px; margin: 0 auto; padding: 60px 40px; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px;">
+            <div class="footer-brand">
+                <div class="logo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="2" y="8" width="2" height="8" fill="#e2b764"/>
+                        <rect x="6" y="4" width="2" height="16" fill="#e2b764"/>
+                        <rect x="10" y="10" width="2" height="4" fill="#e2b764"/>
+                        <rect x="14" y="2" width="2" height="20" fill="#e2b764"/>
+                        <rect x="18" y="6" width="2" height="12" fill="#e2b764"/>
+                    </svg>
+                    <div class="logo-text">
+                        <span class="brand-name">TARABBLADI</span>
+                        <span class="brand-sub">ARABIC DJ RECORD POOL</span>
+                    </div>
+                </div>
+                <p>High quality Arabic music for<br>professional DJs worldwide.</p>
+                <div class="social-links">
+                    <a href="#"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
+                    <a href="#"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.34 2.88 2.88 0 0 1 2.31-4.53 2.66 2.66 0 0 1 1.05.2v-3.6a6.38 6.38 0 0 0-4.11-1.39A6.36 6.36 0 1 0 15.82 17V8.55a8.4 8.4 0 0 0 4.19 1.22z"/></svg></a>
+                    <a href="#"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg></a>
+                </div>
+            </div>
+            
+            <div class="footer-links">
+                <h4>QUICK LINKS</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="browse.html">Browse</a></li>
+                    <li><a href="charts.html">Charts</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="about.html" class="text-gold">About Us</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-links">
+                <h4>SUPPORT</h4>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-links">
+                <h4>COMPANY</h4>
+                <ul>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 TarabBladi. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
