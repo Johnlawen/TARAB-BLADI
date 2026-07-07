@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - TarabBladi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="blog-page">
+    <!-- Navigation -->
+    <nav class="navbar solid-nav">
+        <div class="nav-container">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="8" width="2" height="8" fill="#e2b764" />
+                    <rect x="6" y="4" width="2" height="16" fill="#e2b764" />
+                    <rect x="10" y="10" width="2" height="4" fill="#e2b764" />
+                    <rect x="14" y="2" width="2" height="20" fill="#e2b764" />
+                    <rect x="18" y="6" width="2" height="12" fill="#e2b764" />
+                </svg>
+                <div class="logo-text">
+                    <span class="brand-name">TARABBLADI</span>
+                    <span class="brand-sub">ARABIC DJ RECORD POOL</span>
+                </div>
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="index.html">HOME</a></li>
+                <li><a href="browse.html">BROWSE</a></li>
+                <li><a href="charts.html">CHARTS</a></li>
+                <li><a href="blog.html" class="active">BLOG</a></li>
+                <li><a href="#">ABOUT US</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <a href="#" class="btn-login">LOG IN</a>
+                <a href="#" class="btn-signup">SIGN UP</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Blog Container -->
+    <div class="blog-wrapper">
+        <!-- Blog Header -->
+        <header class="blog-header">
+            <div class="blog-header-text">
+                <h1>BLOG</h1>
+                <p>The community is the heart of TarabBladi.<br>Share, ask, discuss and discover music.</p>
+            </div>
+            <div class="blog-header-actions">
+                <div class="search-input-wrapper flex-grow">
+                    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" placeholder="Search posts...">
+                </div>
+                <button class="btn-primary flex-shrink-0" style="display:flex; align-items:center; gap:8px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    CREATE POST
+                </button>
+            </div>
+        </header>
+
+        <div class="blog-layout">
+            <!-- Left Sidebar -->
+            <aside class="blog-sidebar-left">
+                <!-- Nav Menu -->
+                <nav class="blog-nav-menu">
+                    <a href="#" class="blog-nav-item active">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                        Latest Posts
+                    </a>
+                    <a href="#" class="blog-nav-item">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z">
+                            </path>
+                        </svg>
+                        Popular
+                    </a>
+                    <a href="#" class="blog-nav-item">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M9 18V5l12-2v13"></path>
+                            <circle cx="6" cy="18" r="3"></circle>
+                            <circle cx="18" cy="16" r="3"></circle>
+                        </svg>
+                        Song Requests
+                    </a>
+                    <a href="#" class="blog-nav-item">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        Releases & Edits
+                    </a>
+                    <a href="#" class="blog-nav-item">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M9 21h6"></path>
+                            <path d="M12 21v-4"></path>
+                            <path
+                                d="M12 17A7 7 0 1 0 5 10c0 2 1 3.5 1 5s-1 3.5-1 3.5h14s-1-1.5-1-3.5 1-3.5 1-5a7 7 0 0 0-7-7z">
+                            </path>
+                        </svg>
+                        DJ Tips
+                    </a>
+                    <a href="#" class="blog-nav-item">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        General Discussion
+                    </a>
+                </nav>
+
+                <!-- Premium Card -->
+                <div class="premium-card center-card">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="#e2b764" stroke="#e2b764" stroke-width="1"
+                        class="crown-icon">
+                        <path d="M2 20h20M4 17l1-10 4 3 3-6 3 6 4-3 1 10z"></path>
+                    </svg>
+                    <h4>Join TarabBladi Premium</h4>
+                    <p>Unlock unlimited downloads, exclusive edits and be part of the community.</p>
+                    <a href="#" class="btn-primary-small" style="width:100%; display:block; text-align:center;">START
+                        FREE TRIAL</a>
+                </div>
+
+                <!-- Top Contributors -->
+                <div class="sidebar-widget">
+                    <h3>TOP CONTRIBUTORS</h3>
+                    <div class="contributor-list">
+                        <div class="contributor-item">
+                            <div class="contributor-info">
+                                <img src="https://i.pravatar.cc/150?u=1" alt="Avatar">
+                                <div>
+                                    <h5>DJ Tony</h5>
+                                    <span>1,250 points</span>
+                                </div>
+                            </div>
+                            <div class="contributor-rank rank-1">1</div>
+                        </div>
+                        <div class="contributor-item">
+                            <div class="contributor-info">
+                                <img src="https://i.pravatar.cc/150?u=2" alt="Avatar">
+                                <div>
+                                    <h5>DJ Fadi</h5>
+                                    <span>980 points</span>
+                                </div>
+                            </div>
+                            <div class="contributor-rank rank-2">2</div>
+                        </div>
+                        <div class="contributor-item">
+                            <div class="contributor-info">
+                                <img src="https://i.pravatar.cc/150?u=3" alt="Avatar">
+                                <div>
+                                    <h5>AminX</h5>
+                                    <span>780 points</span>
+                                </div>
+                            </div>
+                            <div class="contributor-rank rank-3">3</div>
+                        </div>
+                        <div class="contributor-item">
+                            <div class="contributor-info">
+                                <img src="https://i.pravatar.cc/150?u=4" alt="Avatar">
+                                <div>
+                                    <h5>DJ Salim</h5>
+                                    <span>620 points</span>
+                                </div>
+                            </div>
+                            <div class="contributor-rank">4</div>
+                        </div>
+                    </div>
+                    <a href="#" class="view-all-small mt-3 d-inline-block">View all</a>
+                </div>
+            </aside>
+
+            <!-- Main Feed -->
+            <main class="blog-main-feed">
+                <!-- Filters Bar -->
+                <div class="blog-filters-bar">
+                    <div class="blog-tags">
+                        <button class="blog-tag active">All</button>
+                        <button class="blog-tag"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M9 18V5l12-2v13"></path>
+                                <circle cx="6" cy="18" r="3"></circle>
+                                <circle cx="18" cy="16" r="3"></circle>
+                            </svg> Song Requests</button>
+                        <button class="blog-tag"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg> Releases & Edits</button>
+                        <button class="blog-tag"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M9 21h6"></path>
+                                <path d="M12 21v-4"></path>
+                                <path
+                                    d="M12 17A7 7 0 1 0 5 10c0 2 1 3.5 1 5s-1 3.5-1 3.5h14s-1-1.5-1-3.5 1-3.5 1-5a7 7 0 0 0-7-7z">
+                                </path>
+                            </svg> DJ Tips</button>
+                        <button class="blog-tag"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg> General Discussion</button>
+                    </div>
+                    <div class="blog-sort">
+                        <select>
+                            <option>Recent</option>
+                            <option>Popular</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Post List -->
+                <div class="blog-post-list">
+                    <!-- Post 1 -->
+                    <article class="blog-post">
+                        <div class="post-badge badge-request">SONG REQUEST</div>
+                        <h2 class="post-title">Looking for a remix of "El Hawa Sultan"</h2>
+                        <p class="post-excerpt">Hey everyone! I'm looking for a remix (preferably Middle Eastern or Tech
+                            House style) of "El Hawa Sultan". Drop any leads if you have it!</p>
+                        <div class="post-footer">
+                            <div class="post-author">
+                                <img src="https://i.pravatar.cc/150?u=5" alt="Avatar">
+                                <span class="author-name">DJ Kareem</span>
+                                <span class="post-time">2 hours ago</span>
+                            </div>
+                            <div class="post-stats">
+                                <span class="stat-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                    </svg> 12</span>
+                                <span class="stat-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2">
+                                        <path
+                                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                                        </path>
+                                    </svg> 24</span>
+                                <button class="icon-btn-border"><svg width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                                    </svg></button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Post 2 -->
+                    <article class="blog-post has-image">
+                        <div class="post-content-wrap">
+                            <div class="post-badge badge-release">RELEASES & EDITS</div>
+                            <h2 class="post-title">New edit: Amr Diab - Tamally Maak (Extended Mix)</h2>
+                            <p class="post-excerpt">Just dropped my extended mix of this timeless classic.<br>Hope you
+                                guys enjoy it!</p>
+                            <div class="post-footer">
+                                <div class="post-author">
+                                    <img src="https://i.pravatar.cc/150?u=2" alt="Avatar">
+                                    <span class="author-name">DJ Fadi <svg width="14" height="14" viewBox="0 0 24 24"
+                                            fill="#e2b764" style="margin-left:4px;">
+                                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                            <polyline points="9 12 11 14 15 10" stroke="white" stroke-width="2"
+                                                fill="none"></polyline>
+                                        </svg></span>
+                                    <span class="post-time">5 hours ago</span>
+                                </div>
+                                <div class="post-stats">
+                                    <span class="stat-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z">
+                                            </path>
+                                        </svg> 28</span>
+                                    <span class="stat-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path
+                                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                                            </path>
+                                        </svg> 56</span>
+                                    <button class="icon-btn-border"><svg width="16" height="16" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                                        </svg></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="post-image">
+                            <img src="https://images.unsplash.com/photo-1571266028243-3716f02d2d2e?ixlib=rb-4.0.3&w=300&q=80"
+                                alt="Tamally Maak Cover">
+                        </div>
+                    </article>
+
+                    <!-- Post 3 -->
+                    <article class="blog-post">
+                        <div class="post-badge badge-request">SONG REQUEST</div>
+                        <h2 class="post-title">Anyone has this song in high quality?</h2>
+                        <p class="post-excerpt">Been searching everywhere for this track. If anyone has it in WAV or
+                            high quality MP3, please share!</p>
+                        <div class="post-footer">
+                            <div class="post-author">
+                                <img src="https://i.pravatar.cc/150?u=3" alt="Avatar">
+                                <span class="author-name">AminX</span>
+                                <span class="post-time">1 day ago</span>
+                            </div>
+                            <div class="post-stats">
+                                <span class="stat-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                    </svg> 8</span>
+                                <span class="stat-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2">
+                                        <path
+                                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                                        </path>
+                                    </svg> 15</span>
+                                <button class="icon-btn-border"><svg width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                                    </svg></button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Post 4 -->
+                    <article class="blog-post">
+                        <div class="post-badge badge-tips">DJ TIPS</div>
+                        <h2 class="post-title">How do you choose the right intro for the crowd?</h2>
+                        <p class="post-excerpt">Share your tips and tricks on reading the crowd and picking the perfect
+                            intro track.</p>
+                        <div class="post-footer">
+                            <div class="post-author">
+                                <img src="https://i.pravatar.cc/150?u=4" alt="Avatar">
+                                <span class="author-name">DJ Salim</span>
+                                <span class="post-time">2 days ago</span>
+                            </div>
+                            <div class="post-stats">
+                                <span class="stat-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                    </svg> 17</span>
+                                <span class="stat-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2">
+                                        <path
+                                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                                        </path>
+                                    </svg> 31</span>
+                                <button class="icon-btn-border"><svg width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                                    </svg></button>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </main>
+
+            <!-- Right Sidebar -->
+            <aside class="blog-sidebar-right">
+                <!-- Popular Requests -->
+                <div class="sidebar-widget">
+                    <h3>POPULAR REQUESTS</h3>
+                    <ul class="simple-list">
+                        <li>
+                            <span class="text-gold" style="width: 16px; display:inline-block">1</span>
+                            <span class="flex-grow">El Hawa Sultan (Remix)</span>
+                            <span class="list-meta"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                </svg> 24</span>
+                        </li>
+                        <li>
+                            <span class="text-gold" style="width: 16px; display:inline-block">2</span>
+                            <span class="flex-grow">Amr Diab - Tamally Maak</span>
+                            <span class="list-meta"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                </svg> 18</span>
+                        </li>
+                        <li>
+                            <span class="text-gold" style="width: 16px; display:inline-block">3</span>
+                            <span class="flex-grow">Wegz - El Bakht</span>
+                            <span class="list-meta"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                </svg> 15</span>
+                        </li>
+                        <li>
+                            <span class="text-gold" style="width: 16px; display:inline-block">4</span>
+                            <span class="flex-grow">Nancy Ajram - Ya Tabtab</span>
+                            <span class="list-meta"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                </svg> 12</span>
+                        </li>
+                        <li>
+                            <span class="text-gold" style="width: 16px; display:inline-block">5</span>
+                            <span class="flex-grow">Fairuz - Kan Enna Tahoun</span>
+                            <span class="list-meta"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                </svg> 10</span>
+                        </li>
+                    </ul>
+                    <a href="#" class="view-all-small mt-3 d-inline-block">View all requests &rarr;</a>
+                </div>
+
+                <!-- Trending Topics -->
+                <div class="sidebar-widget">
+                    <h3>TRENDING TOPICS</h3>
+                    <ul class="simple-list">
+                        <li>
+                            <span class="text-gold">#</span>
+                            <span class="flex-grow">Arabic House</span>
+                            <span class="list-meta">126 posts</span>
+                        </li>
+                        <li>
+                            <span class="text-gold">#</span>
+                            <span class="flex-grow">Song Requests</span>
+                            <span class="list-meta">98 posts</span>
+                        </li>
+                        <li>
+                            <span class="text-gold">#</span>
+                            <span class="flex-grow">Afro Arabic</span>
+                            <span class="list-meta">76 posts</span>
+                        </li>
+                        <li>
+                            <span class="text-gold">#</span>
+                            <span class="flex-grow">New Edits</span>
+                            <span class="list-meta">64 posts</span>
+                        </li>
+                        <li>
+                            <span class="text-gold">#</span>
+                            <span class="flex-grow">DJ Tips</span>
+                            <span class="list-meta">53 posts</span>
+                        </li>
+                    </ul>
+                    <a href="#" class="view-all-small mt-3 d-inline-block">View all topics &rarr;</a>
+                </div>
+
+                <!-- Community Guidelines -->
+                <div class="sidebar-widget">
+                    <h3>COMMUNITY GUIDELINES</h3>
+                    <ul class="guidelines-list">
+                        <li>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e2b764"
+                                stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Be respectful to everyone.
+                        </li>
+                        <li>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e2b764"
+                                stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            No spam or self-promotion.
+                        </li>
+                        <li>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e2b764"
+                                stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Use the right category for your post.
+                        </li>
+                        <li>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e2b764"
+                                stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Request songs that are not available in our pool.
+                        </li>
+                    </ul>
+                    <a href="#" class="view-all-small mt-3 d-inline-block">See full rules &rarr;</a>
+                </div>
+            </aside>
+        </div>
+    </div>
+</body>
+
+</html>
