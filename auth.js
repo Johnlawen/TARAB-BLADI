@@ -130,3 +130,92 @@ if (loginForm) {
 
 // Run check on page load
 checkUser();
+
+// ==========================================
+// SUBSCRIPTION MODAL LOGIC (PLAY BUTTONS)
+// ==========================================
+async function handlePlayAction(e) {
+    // Only intercept if we are not on login/signup page
+    if (window.location.href.includes('login.html') || window.location.href.includes('signup.html')) return;
+    
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+        e.preventDefault();
+        e.stopPropagation();
+        showSubscriptionModal();
+    } else {
+        // User is logged in, proceed with play action
+        console.log('User is logged in. Playing track...');
+    }
+}
+
+function showSubscriptionModal() {
+    let modal = document.getElementById('subscription-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'subscription-modal';
+        modal.className = 'sub-modal-container';
+        modal.innerHTML = `
+            <div class="sub-modal-overlay"></div>
+            <div class="sub-modal-content">
+                <button class="sub-modal-close">&times;</button>
+                <h2>Subscribe to Listen</h2>
+                <p>You need an active subscription to preview and download exclusive Arabic DJ tracks.</p>
+                <div class="sub-plans">
+                    <div class="sub-plan">
+                        <h3>Monthly</h3>
+                        <div class="sub-price">$19.99<span>/mo</span></div>
+                        <ul class="sub-features">
+                            <li>Unlimited Downloads</li>
+                            <li>High Quality WAV & MP3</li>
+                            <li>Exclusive DJ Edits</li>
+                        </ul>
+                        <a href="signup.html" class="btn-primary" style="display:block; text-align:center;">Choose Monthly</a>
+                    </div>
+                    <div class="sub-plan recommended">
+                        <div class="sub-badge">BEST VALUE</div>
+                        <h3>Yearly</h3>
+                        <div class="sub-price">$199.99<span>/yr</span></div>
+                        <ul class="sub-features">
+                            <li>2 Months Free</li>
+                            <li>Unlimited Downloads</li>
+                            <li>High Quality WAV & MP3</li>
+                            <li>Exclusive DJ Edits</li>
+                        </ul>
+                        <a href="signup.html" class="btn-primary" style="background:#e2b764; color:#000; display:block; text-align:center;">Choose Yearly</a>
+                    </div>
+                </div>
+                <div class="sub-login-link">
+                    Already subscribed? <a href="login.html">Log In</a>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        modal.querySelector('.sub-modal-close').addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        modal.querySelector('.sub-modal-overlay').addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    }
+    modal.style.display = 'flex';
+}
+
+function attachPlayListeners() {
+    // Targets play buttons on Home page and Profile page
+    const playBtns = document.querySelectorAll('.play-btn, .sc-play-circle, .hero-buttons .btn-primary');
+    playBtns.forEach(btn => {
+        // Prevent attaching multiple times
+        if (!btn.dataset.playListenerAttached) {
+            btn.addEventListener('click', handlePlayAction);
+            btn.dataset.playListenerAttached = 'true';
+        }
+    });
+}
+
+// Attach listeners when DOM is fully loaded
+document.addEventListener('DOMContentLoaded', attachPlayListeners);
+// Also attach immediately in case DOM is already loaded
+attachPlayListeners();
+
