@@ -39,6 +39,46 @@ async function checkUser() {
                 await supabase.auth.signOut();
                 window.location.href = 'index.html';
             });
+            
+            // If we are on the profile page, clear out the dummy data and display empty state
+            if (window.location.href.includes('profile.html')) {
+                const metadata = user.user_metadata || {};
+                const fullName = metadata.full_name || 'New User';
+                const username = metadata.username || 'User' + Math.floor(Math.random() * 1000);
+                
+                // Update profile text
+                const coverText = document.querySelector('.sc-cover-text');
+                if (coverText) coverText.innerHTML = fullName.replace(' ', '<br>');
+                
+                const displayName = document.querySelector('.sc-display-name');
+                if (displayName) displayName.innerText = username;
+                
+                const realName = document.querySelector('.sc-real-name');
+                if (realName) realName.innerText = fullName;
+                
+                // Clear Avatar
+                const avatar = document.querySelector('.sc-avatar');
+                if (avatar) avatar.src = 'https://ui-avatars.com/api/?name=' + username + '&background=111&color=e2b764'; // Simple text avatar
+                
+                // Empty the track list
+                const trackList = document.querySelector('.sc-track-list');
+                if (trackList) trackList.innerHTML = '<p style="padding: 20px; color: #888;">No tracks uploaded yet.</p>';
+                
+                const sectionHeader = document.querySelector('.sc-section-header h2');
+                if (sectionHeader) sectionHeader.innerText = 'Spotlight (0/5)';
+                
+                // Set followers, following, tracks to 0
+                const statVals = document.querySelectorAll('.sc-stat-val');
+                if (statVals.length >= 3) {
+                    statVals[0].innerText = '0'; // Followers
+                    statVals[1].innerText = '0'; // Following
+                    statVals[2].innerText = '0'; // Tracks
+                }
+                
+                // Empty Bio
+                const bio = document.querySelector('.sc-bio p');
+                if (bio) bio.innerText = 'No bio provided yet.';
+            }
         }
     } else {
         // User is NOT logged in
