@@ -10,6 +10,17 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="admin-page">
+    <!-- Password Overlay -->
+    <div id="admin-login-overlay" class="admin-login-overlay">
+        <div class="admin-login-modal">
+            <h2>Admin Access</h2>
+            <p>Please enter the admin password.</p>
+            <input type="password" id="admin-password" placeholder="Password" onkeypress="handlePasswordKeypress(event)">
+            <button onclick="checkAdminPassword()">LOGIN</button>
+            <p id="admin-error-msg" class="admin-error-msg">Incorrect password.</p>
+        </div>
+    </div>
+
     <!-- Navigation -->
     <nav class="navbar solid-nav">
         <div class="nav-container">
@@ -165,6 +176,23 @@
     </div>
     
     <script>
+        // Password Protection
+        function checkAdminPassword() {
+            const pwd = document.getElementById('admin-password').value;
+            // The password is 'admin123'
+            if (pwd === 'admin123') {
+                document.getElementById('admin-login-overlay').style.display = 'none';
+            } else {
+                document.getElementById('admin-error-msg').style.display = 'block';
+            }
+        }
+
+        function handlePasswordKeypress(event) {
+            if (event.key === 'Enter') {
+                checkAdminPassword();
+            }
+        }
+
         let currentAudio = null;
         let currentPlayBtn = null;
 
