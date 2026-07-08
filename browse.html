@@ -566,6 +566,80 @@
             <a href="#" class="btn-primary">START FREE TRIAL</a>
         </div>
     </div>
-<script type="module" src="auth.js"></script></body>
+<script type="module" src="auth.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const filterItems = document.querySelectorAll('.filter-list li');
+        
+        const filterOptions = {
+            'Genre': ['Arabic House', 'Afro Arabic', 'Oriental Edit', 'Dabke Remix', 'Club Edit'],
+            'BPM': ['115-120', '120-125', '125-130', '130+'],
+            'Key': ['A Minor', 'C Minor', 'D Minor', 'E Minor', 'G Minor'],
+            'Mood': ['Energetic', 'Chill', 'Dark', 'Happy', 'Party'],
+            'Language': ['Arabic', 'English', 'Instrumental'],
+            'Version': ['Extended Mix', 'Edit', 'Radio Edit', 'Acapella'],
+            'Artists': ['Amr Diab', 'Nancy Ajram', 'Mohamed Ramadan', 'Elissa', 'DJL'],
+            'Release Date': ['This Week', 'This Month', 'This Year', 'Older']
+        };
+
+        filterItems.forEach(li => {
+            const filterItem = li.querySelector('.filter-item');
+            const chevron = li.querySelector('.chevron');
+            const titleSpan = filterItem ? filterItem.querySelector('span') : null;
+            
+            if (!titleSpan) return;
+            const filterName = titleSpan.innerText.trim();
+            
+            // Create Header
+            const header = document.createElement('div');
+            header.className = 'filter-header';
+            header.appendChild(filterItem);
+            header.appendChild(chevron);
+            li.appendChild(header);
+            
+            // Create Dropdown
+            const dropdown = document.createElement('div');
+            dropdown.className = 'filter-dropdown';
+            
+            const options = filterOptions[filterName] || ['Option 1', 'Option 2'];
+            options.forEach(opt => {
+                const label = document.createElement('label');
+                label.className = 'filter-checkbox';
+                label.innerHTML = `<input type="checkbox" value="${opt}" onchange="applyFilters()"> ${opt}`;
+                dropdown.appendChild(label);
+            });
+            
+            li.appendChild(dropdown);
+            
+            // Toggle Logic
+            header.addEventListener('click', () => {
+                dropdown.classList.toggle('active');
+                chevron.classList.toggle('open');
+            });
+        });
+    });
+
+    window.applyFilters = function() {
+        const checkedBoxes = Array.from(document.querySelectorAll('.filter-checkbox input:checked')).map(cb => cb.value.toLowerCase());
+        const trackRows = document.querySelectorAll('.track-table-body .track-row');
+        
+        if (checkedBoxes.length === 0) {
+            trackRows.forEach(row => row.style.display = '');
+            return;
+        }
+        
+        trackRows.forEach(row => {
+            const rowText = row.innerText.toLowerCase();
+            // Simple OR logic: show row if it matches AT LEAST ONE of the selected checkboxes
+            const matches = checkedBoxes.some(val => {
+                // For BPM ranges, do a basic string match or handle specific ranges if needed. 
+                // We'll just do a text include for now which covers most genres/keys/artists nicely.
+                return rowText.includes(val);
+            });
+            row.style.display = matches ? '' : 'none';
+        });
+    };
+</script>
+</body>
 
 </html>

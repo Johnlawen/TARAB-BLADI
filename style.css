@@ -3622,3 +3622,50 @@ body.admin-page {
     margin-top: 15px;
     display: none;
 }
+
+/* --- Browse Filters Dropdown Overrides --- */
+.filter-list li {
+    display: block !important;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+.filter-dropdown {
+    display: none;
+    padding-top: 15px;
+    padding-bottom: 5px;
+    padding-left: 28px;
+    flex-direction: column;
+    gap: 12px;
+}
+.filter-dropdown.active {
+    display: flex;
+}
+.filter-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #aaa;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+.filter-checkbox:hover {
+    color: #fff;
+}
+.filter-checkbox input[type="checkbox"] {
+    accent-color: var(--primary);
+    cursor: pointer;
+    width: 14px;
+    height: 14px;
+}
+.chevron {
+    transition: transform 0.3s ease;
+}
+.chevron.open {
+    transform: rotate(180deg);
+}
