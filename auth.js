@@ -78,6 +78,10 @@ async function checkUser() {
                 // Empty Bio
                 const bio = document.querySelector('.sc-sidebar-bio p');
                 if (bio) bio.innerHTML = '';
+                
+                // Remove Social Links
+                const socials = document.querySelector('.sc-sidebar-socials');
+                if (socials) socials.innerHTML = '';
             }
         }
     } else {
