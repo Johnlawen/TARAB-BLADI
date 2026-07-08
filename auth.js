@@ -76,8 +76,8 @@ async function checkUser() {
                 }
                 
                 // Empty Bio
-                const bio = document.querySelector('.sc-bio p');
-                if (bio) bio.innerText = 'No bio provided yet.';
+                const bio = document.querySelector('.sc-sidebar-bio p');
+                if (bio) bio.innerHTML = '';
             }
         }
     } else {
