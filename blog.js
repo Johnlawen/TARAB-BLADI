@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const postContainer = document.querySelector('.blog-post-list');
     const tags = document.querySelectorAll('.blog-tag');
     const sortSelect = document.querySelector('.blog-sort select');
+    const searchInput = document.querySelector('.search-input-wrapper input');
 
     // Add data attributes if they don't exist
     posts.forEach((post, index) => {
@@ -32,12 +33,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentFilter = 'All'; // 'All', 'Song Requests', etc.
     let currentSort = 'Recent'; // 'Recent', 'Popular'
+    let searchQuery = '';
 
     function updatePosts() {
-        // Filter
+        // Filter by category and search query
         let visiblePosts = posts.filter(post => {
-            if (currentFilter === 'All') return true;
-            return post.dataset.category === currentFilter;
+            const matchesCategory = currentFilter === 'All' || post.dataset.category === currentFilter;
+            
+            const title = post.querySelector('.post-title').textContent.toLowerCase();
+            const excerpt = post.querySelector('.post-excerpt').textContent.toLowerCase();
+            const matchesSearch = title.includes(searchQuery) || excerpt.includes(searchQuery);
+            
+            return matchesCategory && matchesSearch;
         });
 
         // Sort
@@ -45,13 +52,26 @@ document.addEventListener('DOMContentLoaded', () => {
             if (currentSort === 'Popular') {
                 return parseInt(b.dataset.likes) - parseInt(a.dataset.likes);
             } else {
+                // Recent is by index (lower index first since they are in order of creation in HTML)
                 return parseInt(a.dataset.index) - parseInt(b.dataset.index);
             }
         });
 
-        // Clear container and append sorted/filtered posts
-        postContainer.innerHTML = '';
-        visiblePosts.forEach(post => postContainer.appendChild(post));
+        // Clear container and append sorted/filtered posts, or show empty state
+        if (visiblePosts.length === 0) {
+            postContainer.innerHTML = `
+                <div class="empty-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 100px 20px; color: #888; text-align: center; width: 100%;">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 15px; opacity: 0.5;">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <h2 style="font-size: 1.5rem; margin-bottom: 10px; color: #fff;">No posts yet</h2>
+                    <p>Be the first to start a discussion!</p>
+                </div>
+            `;
+        } else {
+            postContainer.innerHTML = '';
+            visiblePosts.forEach(post => postContainer.appendChild(post));
+        }
     }
 
     function setActiveNav(selectedText) {
@@ -64,7 +84,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         tags.forEach(tag => {
-            if (tag.textContent.trim() === selectedText || (selectedText === 'Latest Posts' && tag.textContent.trim() === 'All') || (selectedText === 'Popular' && tag.textContent.trim() === 'All')) {
+            const tagText = tag.textContent.trim();
+            if (tagText === selectedText || 
+                (selectedText === 'Latest Posts' && tagText === 'All') || 
+                (selectedText === 'Popular' && tagText === 'All')) {
                  tag.classList.add('active');
             } else {
                  tag.classList.remove('active');
@@ -88,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 sortSelect.value = 'Popular';
             } else {
                 currentFilter = text;
-                currentSort = 'Recent'; // Or keep current sort? Let's reset to recent
+                currentSort = 'Recent';
                 sortSelect.value = 'Recent';
             }
 
@@ -122,4 +145,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         updatePosts();
     });
+
+    // Event Listener for Search Input
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value.toLowerCase().trim();
+            updatePosts();
+        });
+    }
+
+    // Initial render call to set up the default view
+    updatePosts();
 });
