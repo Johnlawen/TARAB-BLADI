@@ -7,6 +7,7 @@
     --text-main: #ffffff;
     --text-muted: #888888;
     --border-color: #222222;
+    --gold: #e2b764;
     
     --font-heading: 'Outfit', sans-serif;
     --font-body: 'Inter', sans-serif;
@@ -1618,6 +1619,10 @@ body.browse-page {
     color: #000;
 }
 
+.blog-sort {
+    position: relative;
+    display: inline-block;
+}
 .blog-sort select {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
