@@ -104,7 +104,7 @@ async function checkUser() {
 }
 
 // Handle Sign Up Form
-const signupForm = document.querySelector('.signup-layout .auth-form');
+const signupForm = document.querySelector('.signup-card .auth-form');
 if (signupForm) {
     signupForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -262,7 +262,120 @@ function attachPlayListeners() {
 }
 
 // Attach listeners when DOM is fully loaded
+// Attach listeners when DOM is fully loaded
 document.addEventListener('DOMContentLoaded', attachPlayListeners);
 // Also attach immediately in case DOM is already loaded
 attachPlayListeners();
+
+// ==========================================
+// PROFILE MODALS LOGIC
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    // Edit Profile Modal
+    const editProfileBtn = document.getElementById('edit-profile-btn');
+    const editProfileModal = document.getElementById('edit-profile-modal');
+    const closeEditModal = document.getElementById('close-edit-modal');
+    const editProfileForm = document.getElementById('edit-profile-form');
+
+    if (editProfileBtn && editProfileModal) {
+        editProfileBtn.addEventListener('click', () => {
+            editProfileModal.style.display = 'flex';
+        });
+        
+        closeEditModal.addEventListener('click', () => {
+            editProfileModal.style.display = 'none';
+        });
+
+        editProfileModal.querySelector('.sub-modal-overlay').addEventListener('click', () => {
+            editProfileModal.style.display = 'none';
+        });
+
+        editProfileForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = editProfileForm.querySelector('.btn-primary');
+            submitBtn.innerText = 'Saving...';
+            
+            // In a real app, you would send this to Supabase:
+            // await supabase.auth.updateUser({ data: { full_name: ... } })
+            
+            setTimeout(() => {
+                alert('Profile updated successfully!');
+                editProfileModal.style.display = 'none';
+                submitBtn.innerText = 'Save Changes';
+                // Reload to show changes (or manually update DOM)
+                window.location.reload();
+            }, 800);
+        });
+    }
+
+    // Upload Track Modal
+    const uploadTrackBtn = document.getElementById('upload-track-btn');
+    const uploadTrackModal = document.getElementById('upload-track-modal');
+    const closeUploadModal = document.getElementById('close-upload-modal');
+    const uploadTrackForm = document.getElementById('upload-track-form');
+
+    if (uploadTrackBtn && uploadTrackModal) {
+        uploadTrackBtn.addEventListener('click', () => {
+            uploadTrackModal.style.display = 'flex';
+        });
+
+        closeUploadModal.addEventListener('click', () => {
+            uploadTrackModal.style.display = 'none';
+        });
+
+        uploadTrackModal.querySelector('.sub-modal-overlay').addEventListener('click', () => {
+            uploadTrackModal.style.display = 'none';
+        });
+
+        uploadTrackForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const submitBtn = uploadTrackForm.querySelector('.btn-primary');
+            submitBtn.innerText = 'Uploading...';
+            
+            setTimeout(() => {
+                alert('Track submitted for review successfully!');
+                uploadTrackModal.style.display = 'none';
+                submitBtn.innerText = 'Submit for Review';
+                uploadTrackForm.reset();
+            }, 1000);
+        });
+    }
+    // Settings Modal
+    const settingsBtn = document.getElementById('settings-btn');
+    const settingsModal = document.getElementById('settings-modal');
+    const closeSettingsModal = document.getElementById('close-settings-modal');
+    const settingsForm = document.getElementById('settings-form');
+
+    if (settingsBtn && settingsModal) {
+        settingsBtn.addEventListener('click', async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user && user.email) {
+                const emailInput = settingsModal.querySelector('input[type="email"]');
+                if (emailInput) emailInput.value = user.email;
+            }
+            settingsModal.style.display = 'flex';
+        });
+
+        closeSettingsModal.addEventListener('click', () => {
+            settingsModal.style.display = 'none';
+        });
+
+        settingsModal.querySelector('.sub-modal-overlay').addEventListener('click', () => {
+            settingsModal.style.display = 'none';
+        });
+
+        settingsForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const submitBtn = settingsForm.querySelector('.btn-primary');
+            submitBtn.innerText = 'Updating...';
+            
+            setTimeout(() => {
+                alert('Account settings updated successfully!');
+                settingsModal.style.display = 'none';
+                submitBtn.innerText = 'Update Settings';
+                settingsForm.reset();
+            }, 800);
+        });
+    }
+});
 
