@@ -67,7 +67,7 @@ async function checkUser() {
                                 </div>
                             </div>
                         </div>
-                        <a href="#" style="display: block; padding: 12px; text-align: center; color: #e2b764; text-decoration: none; font-size: 0.85rem; font-weight: 600; border-top: 1px solid #333;">View All Notifications</a>
+                        <a href="profile.html" target="_blank" style="display: block; padding: 12px; text-align: center; color: #e2b764; text-decoration: none; font-size: 0.85rem; font-weight: 600; border-top: 1px solid #333;">View All Notifications</a>
                     </div>
                 </div>
                 <div class="nav-user-menu-container" style="position: relative; display: flex; align-items: center;">
