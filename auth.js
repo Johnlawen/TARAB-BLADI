@@ -523,36 +523,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Upload Track Modal
+    // Upload Track Button
     const uploadTrackBtn = document.getElementById('upload-track-btn');
-    const uploadTrackModal = document.getElementById('upload-track-modal');
-    const closeUploadModal = document.getElementById('close-upload-modal');
-    const uploadTrackForm = document.getElementById('upload-track-form');
-
-    if (uploadTrackBtn && uploadTrackModal) {
+    if (uploadTrackBtn) {
         uploadTrackBtn.addEventListener('click', () => {
-            uploadTrackModal.style.display = 'flex';
-        });
-
-        closeUploadModal.addEventListener('click', () => {
-            uploadTrackModal.style.display = 'none';
-        });
-
-        uploadTrackModal.querySelector('.sub-modal-overlay').addEventListener('click', () => {
-            uploadTrackModal.style.display = 'none';
-        });
-
-        uploadTrackForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const submitBtn = uploadTrackForm.querySelector('.btn-primary');
-            submitBtn.innerText = 'Uploading...';
-            
-            setTimeout(() => {
-                alert('Track submitted for review successfully!');
-                uploadTrackModal.style.display = 'none';
-                submitBtn.innerText = 'Submit for Review';
-                uploadTrackForm.reset();
-            }, 1000);
+            window.location.href = 'upload.html';
         });
     }
     // Settings Modal

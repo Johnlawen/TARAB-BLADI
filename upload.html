@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Track - TarabBladi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .upload-page {
+            background-color: #0a0a0a;
+            color: #fff;
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            padding-bottom: 50px;
+        }
+        .upload-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .upload-header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .upload-header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            font-family: 'Outfit', sans-serif;
+            color: #e2b764;
+        }
+        .upload-header p {
+            color: #888;
+            font-size: 0.95rem;
+        }
+        .upload-form .form-group {
+            margin-bottom: 25px;
+        }
+        .upload-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+        .upload-form input[type="text"],
+        .upload-form select,
+        .upload-form textarea,
+        .upload-form input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .upload-form input[type="text"]:focus,
+        .upload-form select:focus,
+        .upload-form textarea:focus {
+            border-color: #e2b764;
+        }
+        .upload-form .help-text {
+            display: block;
+            margin-top: 6px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .upload-form .btn-primary {
+            width: 100%;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body class="upload-page">
+    <!-- Navbar -->
+    <nav class="navbar solid-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="8" width="2" height="8" fill="#e2b764"/>
+                    <rect x="6" y="4" width="2" height="16" fill="#e2b764"/>
+                    <rect x="10" y="10" width="2" height="4" fill="#e2b764"/>
+                    <rect x="14" y="2" width="2" height="20" fill="#e2b764"/>
+                    <rect x="18" y="6" width="2" height="12" fill="#e2b764"/>
+                </svg>
+                <div class="logo-text">
+                    <span class="brand-name">TARABBLADI</span>
+                    <span class="brand-sub">ARABIC DJ RECORD POOL</span>
+                </div>
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="index.html">HOME</a></li>
+                <li><a href="browse.html">BROWSE</a></li>
+                <li><a href="charts.html">CHARTS</a></li>
+                <li><a href="blog.html">BLOG</a></li>
+                <li><a href="about.html">ABOUT US</a></li>
+            </ul>
+
+            <div class="nav-actions" style="display: flex; align-items: center; gap: 16px;">
+                <button class="nav-bell-btn" style="background: transparent; border: none; color: #fff; cursor: pointer; display: flex; align-items: center; position: relative;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                    <span style="position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; background: #e2b764; border-radius: 50%;"></span>
+                </button>
+                <div class="nav-user-menu" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                    <img src="https://i.pravatar.cc/150?img=11" alt="Avatar" class="navbar-avatar" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid #e2b764;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="upload-container">
+        <div class="upload-header">
+            <h1>Upload a Track</h1>
+            <p>Share your latest remix or original track with the TarabBladi community. Your track will be reviewed before going live.</p>
+        </div>
+
+        <form id="full-upload-form" class="upload-form">
+            <div class="form-group">
+                <label for="track-title">Track Title *</label>
+                <input type="text" id="track-title" placeholder="e.g. Amr Diab - Tamally Maak (DJL Remix)" required>
+            </div>
+
+            <div class="form-group">
+                <label for="track-genre">Genre / Group *</label>
+                <select id="track-genre" required>
+                    <option value="" disabled selected>Select a genre...</option>
+                    <option value="Arabic House">Arabic House</option>
+                    <option value="Afro Arabic">Afro Arabic</option>
+                    <option value="Oriental Edits">Oriental Edits</option>
+                    <option value="Dabke Electronic">Dabke Electronic</option>
+                    <option value="Mahraganat">Mahraganat</option>
+                    <option value="Afro House">Afro House</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="normal-track">Normal Track (Audio File) *</label>
+                <input type="file" id="normal-track" accept="audio/*" required>
+                <span class="help-text">Please upload a high-quality MP3 or WAV file.</span>
+            </div>
+
+            <div class="form-group">
+                <label for="extended-track">Extended Track (Optional)</label>
+                <input type="file" id="extended-track" accept="audio/*">
+                <span class="help-text">If you have an extended or club mix, upload it here.</span>
+            </div>
+
+            <div class="form-group">
+                <label for="reviewer-notes">Note for Reviewer (Optional)</label>
+                <textarea id="reviewer-notes" placeholder="Any specific details, tempo info, or context about the track..." rows="4"></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary" id="submit-upload-btn">Submit for Review</button>
+        </form>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('full-upload-form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const btn = document.getElementById('submit-upload-btn');
+                    btn.innerText = 'Uploading...';
+                    btn.disabled = true;
+
+                    // Simulate upload delay
+                    setTimeout(() => {
+                        alert('Your track has been submitted for review successfully!');
+                        window.location.href = 'profile.html'; // Redirect back to profile
+                    }, 1500);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
