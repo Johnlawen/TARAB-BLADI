@@ -12,10 +12,29 @@ async function checkUser() {
     const isAuthPage = window.location.href.includes('login.html') || window.location.href.includes('signup.html');
     
     if (user) {
-        // User is logged in
+        // Fetch global profile data for navbar
+        let globalProfile = null;
+        try {
+            const { data } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', user.id)
+                .single();
+            globalProfile = data;
+        } catch(e) {}
+
         if (navActions && !isAuthPage) {
-            const username = user.user_metadata?.username || 'User';
-            const navAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=111&color=e2b764`;
+            let username = 'User';
+            if (globalProfile && globalProfile.display_name) {
+                username = globalProfile.display_name;
+            } else if (user.user_metadata?.username) {
+                username = user.user_metadata.username;
+            }
+            
+            let navAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=111&color=e2b764`;
+            if (globalProfile && globalProfile.avatar_url) {
+                navAvatarUrl = globalProfile.avatar_url;
+            }
             
             navActions.innerHTML = `
                 <div class="nav-bell-container" style="position: relative; display: flex; align-items: center; margin-right: 12px;">
@@ -154,7 +173,13 @@ async function checkUser() {
                     if (profile.display_name) username = profile.display_name;
                     if (profile.location) location = profile.location;
                     if (profile.bio) bioText = profile.bio;
-                    if (profile.avatar_url) avatarUrl = profile.avatar_url;
+                    if (profile.avatar_url) {
+                        avatarUrl = profile.avatar_url;
+                    } else {
+                        avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=111&color=e2b764`;
+                    }
+                } else {
+                    avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=111&color=e2b764`;
                 }
                 
                 // Update profile text
