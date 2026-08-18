@@ -46,8 +46,26 @@ async function checkUser() {
             // If we are on the profile page, clear out the dummy data and display empty state
             if (window.location.href.includes('profile.html')) {
                 const metadata = user.user_metadata || {};
-                const fullName = metadata.full_name || 'New User';
-                const username = metadata.username || 'User' + Math.floor(Math.random() * 1000);
+                let fullName = metadata.full_name || 'New User';
+                let username = metadata.username || 'User' + Math.floor(Math.random() * 1000);
+                let location = 'Location not set';
+                let bioText = 'No bio added yet.';
+                let avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=111&color=e2b764`;
+
+                // Fetch from profiles table
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', user.id)
+                    .single();
+
+                if (profile) {
+                    if (profile.full_name) fullName = profile.full_name;
+                    if (profile.display_name) username = profile.display_name;
+                    if (profile.location) location = profile.location;
+                    if (profile.bio) bioText = profile.bio;
+                    if (profile.avatar_url) avatarUrl = profile.avatar_url;
+                }
                 
                 // Update profile text
                 const coverText = document.querySelector('.sc-cover-text');
@@ -58,10 +76,13 @@ async function checkUser() {
                 
                 const realName = document.querySelector('.sc-real-name');
                 if (realName) realName.innerText = fullName;
+
+                const locationElem = document.querySelector('.sc-location');
+                if (locationElem) locationElem.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> ${location}`;
                 
                 // Clear Avatar
                 const avatar = document.querySelector('.sc-avatar');
-                if (avatar) avatar.src = 'https://ui-avatars.com/api/?name=' + username + '&background=111&color=e2b764'; // Simple text avatar
+                if (avatar) avatar.src = avatarUrl;
                 
                 // Empty the track list
                 const trackList = document.querySelector('.sc-track-list');
@@ -80,7 +101,7 @@ async function checkUser() {
                 
                 // Empty Bio
                 const bio = document.querySelector('.sc-sidebar-bio p');
-                if (bio) bio.innerHTML = '';
+                if (bio) bio.innerHTML = bioText;
                 
                 // Remove Social Links
                 const socials = document.querySelector('.sc-sidebar-socials');
@@ -278,7 +299,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const editProfileForm = document.getElementById('edit-profile-form');
 
     if (editProfileBtn && editProfileModal) {
-        editProfileBtn.addEventListener('click', () => {
+        editProfileBtn.addEventListener('click', async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+                if (profile) {
+                    const displayNameInput = document.getElementById('edit-display-name');
+                    const fullNameInput = document.getElementById('edit-full-name');
+                    const locationInput = document.getElementById('edit-location');
+                    const bioInput = document.getElementById('edit-bio');
+                    
+                    if (displayNameInput && profile.display_name) displayNameInput.value = profile.display_name;
+                    if (fullNameInput && profile.full_name) fullNameInput.value = profile.full_name;
+                    if (locationInput && profile.location) locationInput.value = profile.location;
+                    if (bioInput && profile.bio) bioInput.value = profile.bio;
+                }
+            }
             editProfileModal.style.display = 'flex';
         });
         
@@ -295,16 +331,32 @@ document.addEventListener('DOMContentLoaded', () => {
             const submitBtn = editProfileForm.querySelector('.btn-primary');
             submitBtn.innerText = 'Saving...';
             
-            // In a real app, you would send this to Supabase:
-            // await supabase.auth.updateUser({ data: { full_name: ... } })
-            
-            setTimeout(() => {
-                alert('Profile updated successfully!');
-                editProfileModal.style.display = 'none';
-                submitBtn.innerText = 'Save Changes';
-                // Reload to show changes (or manually update DOM)
-                window.location.reload();
-            }, 800);
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                const newDisplayName = document.getElementById('edit-display-name').value;
+                const newFullName = document.getElementById('edit-full-name').value;
+                const newLocation = document.getElementById('edit-location').value;
+                const newBio = document.getElementById('edit-bio').value;
+
+                const { error } = await supabase
+                    .from('profiles')
+                    .update({ 
+                        display_name: newDisplayName,
+                        full_name: newFullName,
+                        location: newLocation,
+                        bio: newBio
+                    })
+                    .eq('id', user.id);
+
+                if (error) {
+                    alert('Error updating profile: ' + error.message);
+                } else {
+                    alert('Profile updated successfully!');
+                    editProfileModal.style.display = 'none';
+                    window.location.reload();
+                }
+            }
+            submitBtn.innerText = 'Save Changes';
         });
     }
 
