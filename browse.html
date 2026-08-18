@@ -537,7 +537,26 @@
             // Re-apply filters
             applyFilters();
         });
+        });
     });
+
+    // Check URL parameters for genre on load
+    const urlParams = new URLSearchParams(window.location.search);
+    const genreParam = urlParams.get('genre');
+    if (genreParam) {
+        const targetGenre = genreParam.toLowerCase();
+        // Use a slight delay to ensure track rows are loaded if they were dynamic (though currently static)
+        setTimeout(() => {
+            genreTabs.forEach(tab => {
+                const span = tab.querySelector('span');
+                if (span && span.innerText.trim().toLowerCase() === targetGenre) {
+                    tab.click();
+                    // Scroll down slightly so the tabs are visible
+                    window.scrollTo({ top: 300, behavior: 'smooth' });
+                }
+            });
+        }, 100);
+    }
 </script>
 </body>
 
