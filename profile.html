@@ -50,15 +50,21 @@
 
     <!-- Profile Header -->
     <div class="sc-profile-header">
-        <div class="sc-cover-image">
+        <div class="sc-cover-image" style="position: relative;">
+            <button id="edit-cover-pen" title="Edit Cover Photo" style="display: none; position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; width: 36px; height: 36px; align-items: center; justify-content: center; cursor: pointer; z-index: 10; color: #fff; transition: background 0.2s;" onmouseover="this.style.background='rgba(0,0,0,0.8)'" onmouseout="this.style.background='rgba(0,0,0,0.6)'">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+            </button>
             <!-- Simulated Synthwave Cover -->
             <div class="sc-cover-placeholder">
                 <h1 class="sc-cover-text"></h1>
             </div>
             
             <div class="sc-cover-content">
-                <div class="sc-avatar-container">
+                <div class="sc-avatar-container" style="position: relative;">
                     <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="DJ Avatar" class="sc-avatar" style="background: #222;">
+                    <button id="edit-avatar-pen" title="Edit Profile Photo" style="display: none; position: absolute; top: -5px; right: -5px; background: #e2b764; border: 2px solid #111; border-radius: 50%; width: 32px; height: 32px; align-items: center; justify-content: center; cursor: pointer; z-index: 10; color: #111; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                    </button>
                     <div class="sc-avatar-badge">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                     </div>
@@ -216,6 +222,14 @@
                 <div class="form-group">
                     <label>Bio</label>
                     <textarea id="edit-bio" placeholder="Tell us about yourself..." style="width: 100%; padding: 10px; background: #222; border: 1px solid #333; color: #fff; border-radius: 4px; min-height: 80px;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Profile Photo URL</label>
+                    <input type="text" id="edit-avatar-url" placeholder="https://..." style="width: 100%; padding: 10px; background: #222; border: 1px solid #333; color: #fff; border-radius: 4px;">
+                </div>
+                <div class="form-group">
+                    <label>Cover Photo URL (Banner)</label>
+                    <input type="text" id="edit-cover-url" placeholder="https://..." style="width: 100%; padding: 10px; background: #222; border: 1px solid #333; color: #fff; border-radius: 4px;">
                 </div>
                 <button type="submit" class="btn-primary" style="margin-top: 10px; width: 100%;">Save Changes</button>
             </form>

@@ -199,6 +199,14 @@ async function checkUser() {
                 const avatar = document.querySelector('.sc-avatar');
                 if (avatar) avatar.src = avatarUrl;
                 
+                // Update Cover Photo
+                const coverImage = document.querySelector('.sc-cover-image');
+                if (coverImage && profile && profile.cover_url) {
+                    coverImage.style.backgroundImage = `url('${profile.cover_url}')`;
+                    coverImage.style.backgroundSize = 'cover';
+                    coverImage.style.backgroundPosition = 'center';
+                }
+                
                 // Empty the track list
                 const trackList = document.querySelector('.sc-track-list');
                 if (trackList) trackList.innerHTML = '<p style="padding: 20px; color: #888;">No tracks uploaded yet.</p>';
@@ -222,7 +230,24 @@ async function checkUser() {
                 const socials = document.querySelector('.sc-sidebar-socials');
                 if (socials) socials.innerHTML = '';
                 
-                if (!isOwnProfile) {
+                if (isOwnProfile) {
+                    const editAvatarPen = document.getElementById('edit-avatar-pen');
+                    if (editAvatarPen) {
+                        editAvatarPen.style.display = 'flex';
+                        editAvatarPen.addEventListener('click', () => {
+                            const editBtn = document.getElementById('edit-profile-btn');
+                            if (editBtn) editBtn.click();
+                        });
+                    }
+                    const editCoverPen = document.getElementById('edit-cover-pen');
+                    if (editCoverPen) {
+                        editCoverPen.style.display = 'flex';
+                        editCoverPen.addEventListener('click', () => {
+                            const editBtn = document.getElementById('edit-profile-btn');
+                            if (editBtn) editBtn.click();
+                        });
+                    }
+                } else {
                     const editBtn = document.getElementById('edit-profile-btn');
                     if (editBtn) editBtn.style.display = 'none';
                     const uploadBtn = document.getElementById('upload-track-btn');
@@ -430,11 +455,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     const fullNameInput = document.getElementById('edit-full-name');
                     const locationInput = document.getElementById('edit-location');
                     const bioInput = document.getElementById('edit-bio');
+                    const avatarInput = document.getElementById('edit-avatar-url');
+                    const coverInput = document.getElementById('edit-cover-url');
                     
                     if (displayNameInput && profile.display_name) displayNameInput.value = profile.display_name;
                     if (fullNameInput && profile.full_name) fullNameInput.value = profile.full_name;
                     if (locationInput && profile.location) locationInput.value = profile.location;
                     if (bioInput && profile.bio) bioInput.value = profile.bio;
+                    if (avatarInput && profile.avatar_url) avatarInput.value = profile.avatar_url;
+                    if (coverInput && profile.cover_url) coverInput.value = profile.cover_url;
                 }
             }
             editProfileModal.style.display = 'flex';
@@ -459,15 +488,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 const newFullName = document.getElementById('edit-full-name').value;
                 const newLocation = document.getElementById('edit-location').value;
                 const newBio = document.getElementById('edit-bio').value;
+                const newAvatarUrl = document.getElementById('edit-avatar-url').value;
+                const newCoverUrl = document.getElementById('edit-cover-url').value;
+
+                // Update payload
+                const updatePayload = {
+                    display_name: newDisplayName,
+                    full_name: newFullName,
+                    location: newLocation,
+                    bio: newBio
+                };
+                
+                if (newAvatarUrl) updatePayload.avatar_url = newAvatarUrl;
+                if (newCoverUrl) updatePayload.cover_url = newCoverUrl;
 
                 const { error } = await supabase
                     .from('profiles')
-                    .update({ 
-                        display_name: newDisplayName,
-                        full_name: newFullName,
-                        location: newLocation,
-                        bio: newBio
-                    })
+                    .update(updatePayload)
                     .eq('id', user.id);
 
                 if (error) {
