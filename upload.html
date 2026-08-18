@@ -151,14 +151,14 @@
 
             <div class="form-group">
                 <label for="normal-track">Normal Track (Audio File) *</label>
-                <input type="file" id="normal-track" accept=".wav,audio/wav,audio/x-wav" required>
-                <span class="help-text">Please upload a <strong>WAV file ONLY</strong>. We require WAV to maintain the highest quality sound for our DJs (MP3s are not accepted).</span>
+                <input type="file" id="normal-track" accept=".mp3,.wav,audio/*" required>
+                <span class="help-text">Please upload a <strong>high-quality MP3 (320kbps)</strong> or WAV file.</span>
             </div>
 
             <div class="form-group">
                 <label for="extended-track">Extended Track (Optional)</label>
-                <input type="file" id="extended-track" accept=".wav,audio/wav,audio/x-wav">
-                <span class="help-text">If you have an extended or club mix, upload the high-quality WAV file here.</span>
+                <input type="file" id="extended-track" accept=".mp3,.wav,audio/*">
+                <span class="help-text">If you have an extended or club mix, upload the high-quality file here.</span>
             </div>
 
             <div class="form-group">
@@ -199,15 +199,15 @@
                         const normalFile = document.getElementById('normal-track').files[0];
                         const extendedFile = document.getElementById('extended-track').files[0];
 
-                        if (normalFile && !normalFile.name.toLowerCase().endsWith('.wav')) {
-                            alert("Only WAV files are allowed for the normal track!");
+                        if (normalFile && !(normalFile.name.toLowerCase().endsWith('.wav') || normalFile.name.toLowerCase().endsWith('.mp3'))) {
+                            alert("Only high-quality MP3 or WAV files are allowed for the normal track!");
                             btn.innerText = 'Submit for Review';
                             btn.disabled = false;
                             return;
                         }
 
-                        if (extendedFile && !extendedFile.name.toLowerCase().endsWith('.wav')) {
-                            alert("Only WAV files are allowed for the extended track!");
+                        if (extendedFile && !(extendedFile.name.toLowerCase().endsWith('.wav') || extendedFile.name.toLowerCase().endsWith('.mp3'))) {
+                            alert("Only high-quality MP3 or WAV files are allowed for the extended track!");
                             btn.innerText = 'Submit for Review';
                             btn.disabled = false;
                             return;
