@@ -125,18 +125,28 @@ async function checkUser() {
             
             // If we are on the profile page, clear out the dummy data and display empty state
             if (window.location.href.includes('profile.html')) {
+                const urlParams = new URLSearchParams(window.location.search);
+                const profileId = urlParams.get('id') || user.id;
+                const isOwnProfile = profileId === user.id;
+
                 const metadata = user.user_metadata || {};
-                let fullName = metadata.full_name || 'New User';
-                let username = metadata.username || 'User' + Math.floor(Math.random() * 1000);
+                let fullName = 'Loading...';
+                let username = 'User';
                 let location = 'Location not set';
                 let bioText = 'No bio added yet.';
-                let avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=111&color=e2b764`;
+                let avatarUrl = `https://ui-avatars.com/api/?name=User&background=111&color=e2b764`;
+
+                if (isOwnProfile) {
+                    fullName = metadata.full_name || 'New User';
+                    username = metadata.username || 'User' + Math.floor(Math.random() * 1000);
+                    avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=111&color=e2b764`;
+                }
 
                 // Fetch from profiles table
                 const { data: profile } = await supabase
                     .from('profiles')
                     .select('*')
-                    .eq('id', user.id)
+                    .eq('id', profileId)
                     .single();
 
                 if (profile) {
@@ -186,6 +196,13 @@ async function checkUser() {
                 // Remove Social Links
                 const socials = document.querySelector('.sc-sidebar-socials');
                 if (socials) socials.innerHTML = '';
+                
+                if (!isOwnProfile) {
+                    const editBtn = document.getElementById('edit-profile-btn');
+                    if (editBtn) editBtn.style.display = 'none';
+                    const uploadBtn = document.getElementById('upload-track-btn');
+                    if (uploadBtn) uploadBtn.style.display = 'none';
+                }
             }
         }
     } else {
@@ -511,3 +528,60 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// Global Search Logic
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('global-search-input');
+    const searchDropdown = document.getElementById('search-results-dropdown');
+    
+    if (searchInput && searchDropdown) {
+        searchInput.addEventListener('input', async (e) => {
+            const query = e.target.value.trim();
+            if (query.length < 2) {
+                searchDropdown.style.display = 'none';
+                return;
+            }
+            
+            // Search profiles table for matching names
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .or(`display_name.ilike.%${query}%,full_name.ilike.%${query}%`)
+                .limit(5);
+                
+            searchDropdown.innerHTML = '';
+            
+            if (data && data.length > 0) {
+                data.forEach(profile => {
+                    const div = document.createElement('div');
+                    div.style = 'padding: 12px 15px; border-bottom: 1px solid #222; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: background 0.2s;';
+                    div.onmouseover = () => div.style.background = '#1a1a1a';
+                    div.onmouseout = () => div.style.background = 'transparent';
+                    
+                    const avatar = profile.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.display_name || 'User')}&background=333&color=fff`;
+                    div.innerHTML = `
+                        <img src="${avatar}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                        <div>
+                            <div style="color: #fff; font-weight: 600;">${profile.display_name || 'User'}</div>
+                            <div style="color: #888; font-size: 0.8rem;">${profile.full_name || 'Artist'}</div>
+                        </div>
+                    `;
+                    div.onclick = () => {
+                        window.location.href = `profile.html?id=${profile.id}`;
+                    };
+                    searchDropdown.appendChild(div);
+                });
+            } else {
+                searchDropdown.innerHTML = '<div style="padding: 15px; color: #888; text-align: center;">No users found</div>';
+            }
+            
+            searchDropdown.style.display = 'block';
+        });
+        
+        // Hide when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
+                searchDropdown.style.display = 'none';
+            }
+        });
+    }
+});
