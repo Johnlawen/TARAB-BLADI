@@ -38,7 +38,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function updatePosts() {
         // Filter by category and search query
         let visiblePosts = posts.filter(post => {
-            const matchesCategory = currentFilter === 'All' || post.dataset.category === currentFilter;
+            let matchesCategory = false;
+            if (currentFilter === 'All') {
+                matchesCategory = true;
+            } else if (currentFilter === 'Saved Posts') {
+                matchesCategory = post.dataset.bookmarked === 'true';
+            } else {
+                matchesCategory = post.dataset.category === currentFilter;
+            }
             
             const title = post.querySelector('.post-title').textContent.toLowerCase();
             const excerpt = post.querySelector('.post-excerpt').textContent.toLowerCase();
@@ -200,9 +207,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 2. Bookmark Logic (Bookmark Button)
         if (bookmarkBtn) {
-            let bookmarked = false;
+            let bookmarked = post.dataset.bookmarked === 'true';
             bookmarkBtn.addEventListener('click', () => {
-                if (!bookmarked) {
+                bookmarked = !bookmarked;
+                if (bookmarked) {
                     bookmarkBtn.style.color = '#e2b764';
                     bookmarkBtn.style.borderColor = '#e2b764';
                     bookmarkBtn.querySelector('svg').style.fill = '#e2b764';
@@ -211,7 +219,81 @@ document.addEventListener('DOMContentLoaded', () => {
                     bookmarkBtn.style.borderColor = '';
                     bookmarkBtn.querySelector('svg').style.fill = 'none';
                 }
-                bookmarked = !bookmarked;
+                post.dataset.bookmarked = bookmarked.toString();
+                if (currentFilter === 'Saved Posts') {
+                    updatePosts();
+                }
+            });
+        }
+
+        // 3. Comment Logic (Message Bubble Stat)
+        if (stats.length >= 1) {
+            stats[0].style.cursor = 'pointer';
+            
+            let commentCountElem = stats[0].querySelector('.comment-count');
+            if (!commentCountElem) {
+                const text = stats[0].textContent.trim();
+                stats[0].innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <span class="comment-count">${text}</span>
+                `;
+                commentCountElem = stats[0].querySelector('.comment-count');
+            }
+
+            stats[0].addEventListener('click', () => {
+                let commentsSection = post.querySelector('.post-comments-section');
+                if (commentsSection) {
+                    commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
+                } else {
+                    commentsSection = document.createElement('div');
+                    commentsSection.className = 'post-comments-section';
+                    commentsSection.style.marginTop = '20px';
+                    commentsSection.style.paddingTop = '20px';
+                    commentsSection.style.borderTop = '1px solid #333';
+                    
+                    commentsSection.innerHTML = `
+                        <div class="comments-list" style="margin-bottom: 15px; max-height: 200px; overflow-y: auto;">
+                        </div>
+                        <div class="add-comment" style="display: flex; gap: 10px;">
+                            <img src="https://ui-avatars.com/api/?name=You&background=111&color=e2b764" alt="You" style="width: 32px; height: 32px; border-radius: 50%;">
+                            <input type="text" class="comment-input" placeholder="Write a comment..." style="flex-grow: 1; padding: 8px 12px; background: #222; border: 1px solid #444; color: #fff; border-radius: 20px; outline: none;">
+                            <button class="submit-comment-btn btn-primary" style="padding: 6px 16px; font-size: 13px; border-radius: 20px;">Post</button>
+                        </div>
+                    `;
+                    post.querySelector('.post-content-wrap').appendChild(commentsSection);
+                    
+                    const submitBtn = commentsSection.querySelector('.submit-comment-btn');
+                    const input = commentsSection.querySelector('.comment-input');
+                    const commentsList = commentsSection.querySelector('.comments-list');
+                    
+                    submitBtn.addEventListener('click', () => {
+                        const val = input.value.trim();
+                        if (val) {
+                            const newComment = document.createElement('div');
+                            newComment.style.display = 'flex';
+                            newComment.style.gap = '10px';
+                            newComment.style.marginBottom = '12px';
+                            newComment.innerHTML = `
+                                <img src="https://ui-avatars.com/api/?name=You&background=111&color=e2b764" alt="You" style="width: 28px; height: 28px; border-radius: 50%;">
+                                <div style="background: #2a2a2a; padding: 10px 14px; border-radius: 12px; font-size: 14px;">
+                                    <div style="font-weight: 600; color: #e2b764; margin-bottom: 4px; font-size: 13px;">You</div>
+                                    <div>${val}</div>
+                                </div>
+                            `;
+                            commentsList.appendChild(newComment);
+                            input.value = '';
+                            
+                            let currentCount = parseInt(commentCountElem.textContent) || 0;
+                            commentCountElem.textContent = currentCount + 1;
+                        }
+                    });
+
+                    input.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') submitBtn.click();
+                    });
+                }
             });
         }
     }
