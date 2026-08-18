@@ -22,18 +22,34 @@ async function checkUser() {
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
                     <span style="position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; background: #e2b764; border-radius: 50%;"></span>
                 </button>
-                <div class="nav-user-menu" style="display: flex; align-items: center; gap: 8px; cursor: pointer;" title="Go to Profile">
-                    <img src="${navAvatarUrl}" alt="Avatar" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid #e2b764;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                <div class="nav-user-menu-container" style="position: relative; display: flex; align-items: center;">
+                    <div class="nav-user-menu" style="display: flex; align-items: center; gap: 8px; cursor: pointer;" title="Profile Menu">
+                        <img src="${navAvatarUrl}" alt="Avatar" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid #e2b764;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                    <div class="nav-dropdown" style="display: none; position: absolute; top: 100%; right: 70px; background: #111; border: 1px solid #333; border-radius: 8px; padding: 8px 0; margin-top: 15px; min-width: 150px; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+                        <a href="profile.html" style="display: block; padding: 10px 20px; color: #fff; text-decoration: none; font-size: 0.9rem; transition: background 0.2s;" onmouseover="this.style.background='#222'" onmouseout="this.style.background='transparent'">Profile</a>
+                        <a href="likes.html" style="display: block; padding: 10px 20px; color: #fff; text-decoration: none; font-size: 0.9rem; transition: background 0.2s;" onmouseover="this.style.background='#222'" onmouseout="this.style.background='transparent'">My Likes</a>
+                        <a href="settings.html" target="_blank" style="display: block; padding: 10px 20px; color: #fff; text-decoration: none; font-size: 0.9rem; transition: background 0.2s;" onmouseover="this.style.background='#222'" onmouseout="this.style.background='transparent'">Settings</a>
+                    </div>
+                    <button id="logout-btn" style="background: transparent; border: none; color: #e2b764; cursor: pointer; margin-left: 16px; font-size: 0.85rem; font-weight: 600;">LOGOUT</button>
                 </div>
-                <button id="logout-btn" style="background: transparent; border: none; color: #e2b764; cursor: pointer; margin-left: 16px; font-size: 0.85rem; font-weight: 600;">LOGOUT</button>
             `;
             
             // Handle Profile Menu click
             const profileMenu = document.querySelector('.nav-user-menu');
-            if (profileMenu) {
-                profileMenu.addEventListener('click', () => {
-                    window.location.href = 'profile.html';
+            const navDropdown = document.querySelector('.nav-dropdown');
+            if (profileMenu && navDropdown) {
+                profileMenu.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    navDropdown.style.display = navDropdown.style.display === 'none' ? 'block' : 'none';
+                });
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!profileMenu.contains(e.target) && !navDropdown.contains(e.target)) {
+                        navDropdown.style.display = 'none';
+                    }
                 });
             }
             

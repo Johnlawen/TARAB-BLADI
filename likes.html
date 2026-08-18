@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Likes - TarabBladi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="browse-page">
+    <!-- Navigation -->
+    <nav class="navbar solid-nav">
+        <div class="nav-container">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="8" width="2" height="8" fill="#e2b764" />
+                    <rect x="6" y="4" width="2" height="16" fill="#e2b764" />
+                    <rect x="10" y="10" width="2" height="4" fill="#e2b764" />
+                    <rect x="14" y="2" width="2" height="20" fill="#e2b764" />
+                    <rect x="18" y="6" width="2" height="12" fill="#e2b764" />
+                </svg>
+                <div class="logo-text">
+                    <span class="brand-name">TARABBLADI</span>
+                    <span class="brand-sub">ARABIC DJ RECORD POOL</span>
+                </div>
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="index.html">HOME</a></li>
+                <li><a href="browse.html">BROWSE</a></li>
+                <li><a href="charts.html">CHARTS</a></li>
+                <li><a href="blog.html">BLOG</a></li>
+                <li><a href="about.html">ABOUT US</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <!-- Nav actions will be populated by auth.js -->
+            </div>
+        </div>
+    </nav>
+
+    <div class="browse-wrapper">
+        <!-- Page Header -->
+        <header class="browse-header" style="text-align: center; margin-bottom: 40px;">
+            <h1>MY LIKES</h1>
+            <p>Tracks you have liked and saved for later.</p>
+        </header>
+
+        <div class="browse-layout" style="justify-content: center;">
+            <!-- Main Content -->
+            <main class="browse-main" style="flex: 0 0 100%; max-width: 1000px;">
+                <!-- Track Table -->
+                <div class="track-table">
+                    <div class="track-table-header">
+                        <div class="th-track">TRACK</div>
+                        <div class="th-genre">GENRE</div>
+                        <div class="th-bpm">BPM</div>
+                        <div class="th-key">KEY</div>
+                        <div class="th-version">VERSION</div>
+                        <div class="th-released">RELEASED</div>
+                        <div class="th-waveform"></div>
+                        <div class="th-actions"></div>
+                    </div>
+
+                    <div class="track-table-body" id="likes-track-list">
+                        <div class="empty-state" style="text-align: center; padding: 50px; color: #888; width: 100%;">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 15px; opacity: 0.5;">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                            <h2 style="font-size: 1.5rem; margin-bottom: 10px; color: #fff;">No liked tracks yet</h2>
+                            <p>You haven't liked any songs yet. Go browse and find some great tracks!</p>
+                            <div style="margin-top: 20px;">
+                                <a href="browse.html" class="btn-primary">Browse Music</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script type="module" src="auth.js"></script>
+</body>
+</html>
