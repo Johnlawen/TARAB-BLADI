@@ -62,7 +62,7 @@
             <div class="sc-cover-content">
                 <div class="sc-avatar-container" style="position: relative;">
                     <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="DJ Avatar" class="sc-avatar" style="background: #222;">
-                    <button id="edit-avatar-pen" title="Edit Profile Photo" style="display: none; position: absolute; top: -5px; right: -5px; background: #e2b764; border: 2px solid #111; border-radius: 50%; width: 32px; height: 32px; align-items: center; justify-content: center; cursor: pointer; z-index: 10; color: #111; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                    <button id="edit-avatar-pen" title="Edit Profile Photo" style="display: none; position: absolute; bottom: 0; right: 0; background: #e2b764; border: 2px solid #111; border-radius: 50%; width: 32px; height: 32px; align-items: center; justify-content: center; cursor: pointer; z-index: 10; color: #111; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
                     </button>
                     <div class="sc-avatar-badge">
@@ -223,16 +223,25 @@
                     <label>Bio</label>
                     <textarea id="edit-bio" placeholder="Tell us about yourself..." style="width: 100%; padding: 10px; background: #222; border: 1px solid #333; color: #fff; border-radius: 4px; min-height: 80px;"></textarea>
                 </div>
-                <div class="form-group">
-                    <label>Profile Photo URL</label>
-                    <input type="text" id="edit-avatar-url" placeholder="https://..." style="width: 100%; padding: 10px; background: #222; border: 1px solid #333; color: #fff; border-radius: 4px;">
-                </div>
-                <div class="form-group">
-                    <label>Cover Photo URL (Banner)</label>
-                    <input type="text" id="edit-cover-url" placeholder="https://..." style="width: 100%; padding: 10px; background: #222; border: 1px solid #333; color: #fff; border-radius: 4px;">
-                </div>
+
                 <button type="submit" class="btn-primary" style="margin-top: 10px; width: 100%;">Save Changes</button>
             </form>
+        </div>
+    </div>
+
+    <!-- Upload Photo Modal -->
+    <div id="upload-photo-modal" class="sub-modal-container" style="display: none;">
+        <div class="sub-modal-overlay"></div>
+        <div class="sub-modal-content" style="max-width: 400px; text-align: center;">
+            <button class="sub-modal-close" id="close-photo-modal">&times;</button>
+            <h2 id="photo-modal-title" style="margin-bottom: 20px;">Upload Photo</h2>
+            <div id="photo-dropzone" style="border: 2px dashed #444; border-radius: 8px; padding: 40px; margin-bottom: 20px; cursor: pointer; transition: border-color 0.2s; background: #1a1a1a;">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" style="margin-bottom: 15px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <p id="photo-dropzone-text" style="color: #888; margin: 0;">Click or drag photo here to upload</p>
+                <input type="file" id="photo-file-input" accept="image/*" style="display: none;">
+            </div>
+            <img id="photo-preview" style="display: none; max-width: 100%; max-height: 200px; border-radius: 8px; margin-bottom: 20px; object-fit: cover; margin-left: auto; margin-right: auto;">
+            <button id="save-photo-btn" class="btn-primary" style="width: 100%; display: none;">Save Photo</button>
         </div>
     </div>
 

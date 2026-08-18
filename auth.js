@@ -235,16 +235,18 @@ async function checkUser() {
                     if (editAvatarPen) {
                         editAvatarPen.style.display = 'flex';
                         editAvatarPen.addEventListener('click', () => {
-                            const editBtn = document.getElementById('edit-profile-btn');
-                            if (editBtn) editBtn.click();
+                            window.currentPhotoUploadType = 'avatar';
+                            document.getElementById('photo-modal-title').innerText = 'Upload Profile Photo';
+                            document.getElementById('upload-photo-modal').style.display = 'flex';
                         });
                     }
                     const editCoverPen = document.getElementById('edit-cover-pen');
                     if (editCoverPen) {
                         editCoverPen.style.display = 'flex';
                         editCoverPen.addEventListener('click', () => {
-                            const editBtn = document.getElementById('edit-profile-btn');
-                            if (editBtn) editBtn.click();
+                            window.currentPhotoUploadType = 'cover';
+                            document.getElementById('photo-modal-title').innerText = 'Upload Cover Photo';
+                            document.getElementById('upload-photo-modal').style.display = 'flex';
                         });
                     }
                 } else {
@@ -488,8 +490,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const newFullName = document.getElementById('edit-full-name').value;
                 const newLocation = document.getElementById('edit-location').value;
                 const newBio = document.getElementById('edit-bio').value;
-                const newAvatarUrl = document.getElementById('edit-avatar-url').value;
-                const newCoverUrl = document.getElementById('edit-cover-url').value;
 
                 // Update payload
                 const updatePayload = {
@@ -498,9 +498,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     location: newLocation,
                     bio: newBio
                 };
-                
-                if (newAvatarUrl) updatePayload.avatar_url = newAvatarUrl;
-                if (newCoverUrl) updatePayload.cover_url = newCoverUrl;
 
                 const { error } = await supabase
                     .from('profiles')
@@ -695,6 +692,132 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('click', (e) => {
             if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
                 searchDropdown.style.display = 'none';
+            }
+        });
+    }
+
+    // Photo Upload Modal Logic
+    const uploadPhotoModal = document.getElementById('upload-photo-modal');
+    if (uploadPhotoModal) {
+        const closeBtn = document.getElementById('close-photo-modal');
+        const overlay = uploadPhotoModal.querySelector('.sub-modal-overlay');
+        const dropzone = document.getElementById('photo-dropzone');
+        const fileInput = document.getElementById('photo-file-input');
+        const preview = document.getElementById('photo-preview');
+        const saveBtn = document.getElementById('save-photo-btn');
+        let selectedFileBase64 = null;
+
+        const closeModal = () => {
+            uploadPhotoModal.style.display = 'none';
+            preview.style.display = 'none';
+            preview.src = '';
+            saveBtn.style.display = 'none';
+            saveBtn.disabled = true;
+            fileInput.value = '';
+            selectedFileBase64 = null;
+        };
+
+        closeBtn.addEventListener('click', closeModal);
+        overlay.addEventListener('click', closeModal);
+
+        dropzone.addEventListener('click', () => fileInput.click());
+
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = '#e2b764';
+        });
+
+        dropzone.addEventListener('dragleave', () => {
+            dropzone.style.borderColor = '#444';
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = '#444';
+            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                handleFileSelect(e.dataTransfer.files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files.length > 0) {
+                handleFileSelect(e.target.files[0]);
+            }
+        });
+
+        function handleFileSelect(file) {
+            if (!file.type.startsWith('image/')) {
+                alert('Please select an image file.');
+                return;
+            }
+            // For prototype purposes, we will compress/resize the image using Canvas before saving to DB text column
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let maxWidth = window.currentPhotoUploadType === 'cover' ? 1200 : 400;
+                    let maxHeight = window.currentPhotoUploadType === 'cover' ? 400 : 400;
+                    
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
+                        }
+                    } else {
+                        if (height > maxHeight) {
+                            width = Math.round((width * maxHeight) / height);
+                            height = maxHeight;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    selectedFileBase64 = canvas.toDataURL('image/jpeg', 0.7); // Compress to 70% quality JPEG
+                    
+                    preview.src = selectedFileBase64;
+                    preview.style.display = 'block';
+                    saveBtn.style.display = 'block';
+                    saveBtn.disabled = false;
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        saveBtn.addEventListener('click', async () => {
+            if (!selectedFileBase64) return;
+            
+            saveBtn.innerText = 'Saving...';
+            saveBtn.disabled = true;
+
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                const updatePayload = {};
+                if (window.currentPhotoUploadType === 'avatar') {
+                    updatePayload.avatar_url = selectedFileBase64;
+                } else if (window.currentPhotoUploadType === 'cover') {
+                    updatePayload.cover_url = selectedFileBase64;
+                }
+
+                const { error } = await supabase
+                    .from('profiles')
+                    .update(updatePayload)
+                    .eq('id', user.id);
+
+                if (error) {
+                    alert('Error saving photo: ' + error.message);
+                    saveBtn.innerText = 'Save Photo';
+                    saveBtn.disabled = false;
+                } else {
+                    window.location.reload();
+                }
             }
         });
     }
