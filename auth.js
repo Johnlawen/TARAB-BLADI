@@ -2,7 +2,8 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 const supabaseUrl = 'https://ktrmgxixbycdapcmwcih.supabase.co'
 const supabaseKey = 'sb_publishable_H01ibabwtUj6FLR-zie7Xw_74dDAmsP'
-const supabase = createClient(supabaseUrl, supabaseKey)
+export const supabase = createClient(supabaseUrl, supabaseKey)
+window.supabase = supabase;
 
 async function checkUser() {
     const { data: { user } } = await supabase.auth.getUser()

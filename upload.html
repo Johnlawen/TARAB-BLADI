@@ -170,8 +170,10 @@
         </form>
     </div>
 
-    <script src="auth.js"></script>
-    <script>
+    <script type="module" src="auth.js"></script>
+    <script type="module">
+        import { supabase } from './auth.js';
+        
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('full-upload-form');
             if (form) {

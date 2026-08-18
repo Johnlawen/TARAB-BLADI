@@ -15,7 +15,7 @@
             window.location.href = 'admin.html';
         }
     </script>
-    <script src="auth.js" defer></script>
+    <script type="module" src="auth.js"></script>
 </head>
 <body class="admin-page">
     <!-- Navigation -->
@@ -128,13 +128,13 @@
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
-            if (typeof supabase === 'undefined') {
+            if (!window.supabase) {
                 console.error("Supabase not loaded");
                 return;
             }
 
             // Fetch pending tracks
-            const { data: submissions, error } = await supabase
+            const { data: submissions, error } = await window.supabase
                 .from('track_submissions')
                 .select(`
                     *,
@@ -203,7 +203,7 @@
 
         async function acceptSubmission(id, btnElement) {
             btnElement.disabled = true;
-            const { error } = await supabase.from('track_submissions').update({ status: 'approved' }).eq('id', id);
+            const { error } = await window.supabase.from('track_submissions').update({ status: 'approved' }).eq('id', id);
             if (error) {
                 alert("Error: " + error.message);
                 btnElement.disabled = false;
@@ -223,7 +223,7 @@
 
         async function declineSubmission(id, btnElement) {
             btnElement.disabled = true;
-            const { error } = await supabase.from('track_submissions').update({ status: 'rejected' }).eq('id', id);
+            const { error } = await window.supabase.from('track_submissions').update({ status: 'rejected' }).eq('id', id);
             if (error) {
                 alert("Error: " + error.message);
                 btnElement.disabled = false;
