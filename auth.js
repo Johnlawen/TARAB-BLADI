@@ -248,7 +248,7 @@ async function checkUser() {
                         editCoverPen.style.display = 'flex';
                         editCoverPen.addEventListener('click', () => {
                             window.currentPhotoUploadType = 'cover';
-                            document.getElementById('photo-modal-title').innerText = 'Upload Cover Photo';
+                            document.getElementById('photo-modal-title').innerText = 'Upload banner photo';
                             document.getElementById('upload-photo-modal').style.display = 'flex';
                         });
                     }
