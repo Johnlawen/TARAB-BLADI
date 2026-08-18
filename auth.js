@@ -231,6 +231,9 @@ async function checkUser() {
                 if (socials) socials.innerHTML = '';
                 
                 if (isOwnProfile) {
+                    const badge = document.querySelector('.sc-avatar-badge');
+                    if (badge) badge.style.display = 'none';
+
                     const editAvatarPen = document.getElementById('edit-avatar-pen');
                     if (editAvatarPen) {
                         editAvatarPen.style.display = 'flex';
