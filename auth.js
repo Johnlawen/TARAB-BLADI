@@ -541,17 +541,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
+            searchDropdown.innerHTML = '<div style="padding: 15px; color: #888; text-align: center;">Searching...</div>';
+            searchDropdown.style.display = 'block';
+            
             // Search profiles table for matching names
-            const { data, error } = await supabase
+            const { data: profilesData, error: profilesErr } = await supabase
                 .from('profiles')
                 .select('*')
                 .or(`display_name.ilike.%${query}%,full_name.ilike.%${query}%`)
-                .limit(5);
+                .limit(3);
+                
+            // Search tracks table (if it exists)
+            let tracksData = [];
+            try {
+                const { data, error } = await supabase
+                    .from('tracks')
+                    .select('*')
+                    .ilike('title', `%${query}%`)
+                    .limit(3);
+                if (data) tracksData = data;
+            } catch (err) {
+                console.log('Tracks table might not exist yet.');
+            }
                 
             searchDropdown.innerHTML = '';
+            let hasResults = false;
             
-            if (data && data.length > 0) {
-                data.forEach(profile => {
+            if (profilesData && profilesData.length > 0) {
+                hasResults = true;
+                const header = document.createElement('div');
+                header.style = 'padding: 8px 15px; font-size: 0.75rem; color: #888; text-transform: uppercase; border-bottom: 1px solid #222; font-weight: 600;';
+                header.innerText = 'Profiles';
+                searchDropdown.appendChild(header);
+                
+                profilesData.forEach(profile => {
                     const div = document.createElement('div');
                     div.style = 'padding: 12px 15px; border-bottom: 1px solid #222; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: background 0.2s;';
                     div.onmouseover = () => div.style.background = '#1a1a1a';
@@ -559,10 +582,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     const avatar = profile.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.display_name || 'User')}&background=333&color=fff`;
                     div.innerHTML = `
-                        <img src="${avatar}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                        <img src="${avatar}" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;">
                         <div>
-                            <div style="color: #fff; font-weight: 600;">${profile.display_name || 'User'}</div>
-                            <div style="color: #888; font-size: 0.8rem;">${profile.full_name || 'Artist'}</div>
+                            <div style="color: #fff; font-weight: 600; font-size: 0.9rem;">${profile.display_name || 'User'}</div>
+                            <div style="color: #888; font-size: 0.75rem;">${profile.full_name || 'Artist'}</div>
                         </div>
                     `;
                     div.onclick = () => {
@@ -570,11 +593,40 @@ document.addEventListener('DOMContentLoaded', () => {
                     };
                     searchDropdown.appendChild(div);
                 });
-            } else {
-                searchDropdown.innerHTML = '<div style="padding: 15px; color: #888; text-align: center;">No users found</div>';
             }
             
-            searchDropdown.style.display = 'block';
+            if (tracksData && tracksData.length > 0) {
+                hasResults = true;
+                const header = document.createElement('div');
+                header.style = 'padding: 8px 15px; font-size: 0.75rem; color: #888; text-transform: uppercase; border-bottom: 1px solid #222; font-weight: 600;';
+                header.innerText = 'Tracks';
+                searchDropdown.appendChild(header);
+                
+                tracksData.forEach(track => {
+                    const div = document.createElement('div');
+                    div.style = 'padding: 12px 15px; border-bottom: 1px solid #222; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: background 0.2s;';
+                    div.onmouseover = () => div.style.background = '#1a1a1a';
+                    div.onmouseout = () => div.style.background = 'transparent';
+                    
+                    div.innerHTML = `
+                        <div style="width: 36px; height: 36px; border-radius: 4px; background: #333; display: flex; align-items: center; justify-content: center; color: #e2b764;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                        </div>
+                        <div>
+                            <div style="color: #fff; font-weight: 600; font-size: 0.9rem;">${track.title || 'Unknown Track'}</div>
+                            <div style="color: #888; font-size: 0.75rem;">${track.artist || 'Unknown Artist'} • ${track.genre || 'Genre'}</div>
+                        </div>
+                    `;
+                    div.onclick = () => {
+                        window.location.href = `browse.html?search=${encodeURIComponent(track.title)}`;
+                    };
+                    searchDropdown.appendChild(div);
+                });
+            }
+            
+            if (!hasResults) {
+                searchDropdown.innerHTML = '<div style="padding: 15px; color: #888; text-align: center; font-size: 0.9rem;">No profiles or tracks found</div>';
+            }
         });
         
         // Hide when clicking outside

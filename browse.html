@@ -53,13 +53,15 @@
             <p>Find the perfect track for your next set.</p>
 
             <div class="browse-search-bar">
-                <div class="search-input-wrapper">
+                <div class="search-input-wrapper" style="position: relative;">
                     <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2">
                         <circle cx="11" cy="11" r="8"></circle>
                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </svg>
-                    <input type="text" placeholder="Search tracks, artists, remixes...">
+                    <input type="text" id="global-search-input" placeholder="Search tracks, artists, remixes...">
+                    <div id="search-results-dropdown" style="display: none; position: absolute; top: calc(100% + 10px); left: 0; right: 0; background: rgba(17,17,17,0.95); border: 1px solid #333; border-radius: 8px; z-index: 100; max-height: 300px; overflow-y: auto; text-align: left; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.8);">
+                    </div>
                 </div>
                 <button class="btn-outline-small">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -502,6 +504,9 @@
         const activeTab = document.querySelector('.genre-tab.active span');
         const activeGenre = activeTab ? activeTab.innerText.trim().toLowerCase() : 'all music';
         
+        const searchInput = document.getElementById('global-search-input');
+        const searchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        
         trackRows.forEach(row => {
             const rowText = row.innerText.toLowerCase();
             
@@ -514,16 +519,25 @@
             // Check genre tab filter
             let matchesGenre = true;
             if (activeGenre !== 'all music') {
-                // For 'Oriental Edits', 'Arabic House', etc., match the text in the row
-                // Strip the plural 's' from 'Edits' or 'Remixes' if needed, or just do a straight include
-                // Since the UI says "Oriental Edits" and the genre in the row might say "Oriental Edit", we check the base string
                 let searchGenre = activeGenre.replace(' edits', ' edit').replace(' remixes', ' remix').replace(' bangers', ' banger');
                 matchesGenre = rowText.includes(searchGenre);
             }
             
-            row.style.display = (matchesCheckboxes && matchesGenre) ? '' : 'none';
+            // Check search query
+            let matchesSearch = true;
+            if (searchQuery !== '') {
+                matchesSearch = rowText.includes(searchQuery);
+            }
+            
+            row.style.display = (matchesCheckboxes && matchesGenre && matchesSearch) ? '' : 'none';
         });
     };
+
+    // Listen to search input
+    const searchInputElem = document.getElementById('global-search-input');
+    if (searchInputElem) {
+        searchInputElem.addEventListener('input', applyFilters);
+    }
 
     // Add event listeners for genre tabs
     const genreTabs = document.querySelectorAll('.genre-tab');
@@ -554,6 +568,15 @@
                     window.scrollTo({ top: 300, behavior: 'smooth' });
                 }
             });
+        }, 100);
+    }
+
+    const searchParam = urlParams.get('search');
+    if (searchParam && searchInputElem) {
+        searchInputElem.value = searchParam;
+        setTimeout(() => {
+            applyFilters();
+            window.scrollTo({ top: 300, behavior: 'smooth' });
         }, 100);
     }
 </script>
