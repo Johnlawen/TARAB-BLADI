@@ -8,12 +8,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // Security check - redirect if not authenticated
         if (sessionStorage.getItem('tarab_admin_auth') !== 'true') {
             window.location.href = 'admin.html';
         }
     </script>
+    <script src="auth.js" defer></script>
 </head>
 <body class="admin-page">
     <!-- Navigation -->
@@ -125,7 +127,89 @@
             }
         }
 
-        function acceptSubmission(btnElement) {
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (typeof supabase === 'undefined') {
+                console.error("Supabase not loaded");
+                return;
+            }
+
+            // Fetch pending tracks
+            const { data: submissions, error } = await supabase
+                .from('track_submissions')
+                .select(`
+                    *,
+                    profiles!track_submissions_user_id_fkey(display_name)
+                `)
+                .eq('status', 'pending')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error("Error fetching submissions:", error);
+                return;
+            }
+
+            // Update stats (mock logic for approved/declined for now, just actual pending)
+            const pendingEl = document.querySelectorAll('.stat-value')[0];
+            if (pendingEl) pendingEl.innerText = submissions.length;
+
+            const trackList = document.querySelector('.track-list');
+            
+            if (submissions.length > 0) {
+                trackList.innerHTML = ''; // Clear empty state
+                
+                submissions.forEach(sub => {
+                    const row = document.createElement('div');
+                    row.className = 'track-row admin-track-row';
+                    row.dataset.id = sub.id;
+                    
+                    const audioId = 'audio_' + sub.id;
+                    const artistName = sub.profiles ? sub.profiles.display_name : 'Unknown Artist';
+
+                    row.innerHTML = `
+                        <div class="track-cover-play">
+                            <div style="width: 100px; height: 100px; background: #222; display: flex; align-items: center; justify-content: center; color: #e2b764;">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                            </div>
+                            <button class="play-btn" onclick="playAudio('${audioId}', this)">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            </button>
+                            <audio id="${audioId}" src="${sub.normal_track_url}"></audio>
+                        </div>
+                        <div class="track-info">
+                            <h4>${sub.title}</h4>
+                            <p>Submitted by: ${artistName}</p>
+                            <p style="font-size: 0.75rem; color: #888; margin-top: 4px;">Notes: ${sub.reviewer_notes || 'None'}</p>
+                            ${sub.extended_track_url ? `<a href="${sub.extended_track_url}" target="_blank" style="font-size: 0.75rem; color: #e2b764; text-decoration: none;">Download Extended Mix</a>` : ''}
+                        </div>
+                        <div class="track-meta">${sub.genre}</div>
+                        <div class="track-waveform">
+                            <div class="waveform-mockup"></div>
+                        </div>
+                        <div class="track-actions admin-actions">
+                            <button class="btn-accept" onclick="acceptSubmission('${sub.id}', this)">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                ACCEPT
+                            </button>
+                            <button class="btn-decline" onclick="declineSubmission('${sub.id}', this)">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                DECLINE
+                            </button>
+                        </div>
+                    `;
+                    trackList.appendChild(row);
+                });
+            }
+        });
+
+        async function acceptSubmission(id, btnElement) {
+            btnElement.disabled = true;
+            const { error } = await supabase.from('track_submissions').update({ status: 'approved' }).eq('id', id);
+            if (error) {
+                alert("Error: " + error.message);
+                btnElement.disabled = false;
+                return;
+            }
+            
             const row = btnElement.closest('.track-row');
             row.style.transition = 'all 0.5s ease';
             row.style.background = 'rgba(46, 204, 113, 0.1)';
@@ -133,10 +217,19 @@
             setTimeout(() => {
                 row.remove();
                 updateStats(true);
+                checkEmptyState();
             }, 500);
         }
 
-        function declineSubmission(btnElement) {
+        async function declineSubmission(id, btnElement) {
+            btnElement.disabled = true;
+            const { error } = await supabase.from('track_submissions').update({ status: 'rejected' }).eq('id', id);
+            if (error) {
+                alert("Error: " + error.message);
+                btnElement.disabled = false;
+                return;
+            }
+
             const row = btnElement.closest('.track-row');
             row.style.transition = 'all 0.5s ease';
             row.style.background = 'rgba(231, 76, 60, 0.1)';
@@ -144,7 +237,25 @@
             setTimeout(() => {
                 row.remove();
                 updateStats(false);
+                checkEmptyState();
             }, 500);
+        }
+
+        function checkEmptyState() {
+            const trackList = document.querySelector('.track-list');
+            if (trackList.querySelectorAll('.track-row').length === 0) {
+                trackList.innerHTML = `
+                    <div class="empty-state" style="text-align: center; padding: 50px; color: #888; width: 100%;">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 15px; opacity: 0.5;">
+                            <path d="M9 18V5l12-2v13"></path>
+                            <circle cx="6" cy="18" r="3"></circle>
+                            <circle cx="18" cy="16" r="3"></circle>
+                        </svg>
+                        <h3 style="color: #ccc; margin-bottom: 10px;">No Pending Submissions</h3>
+                        <p>When artists submit new music, it will appear here for you to review.</p>
+                    </div>
+                `;
+            }
         }
 
         function updateStats(accepted) {

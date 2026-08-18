@@ -175,17 +175,65 @@
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('full-upload-form');
             if (form) {
-                form.addEventListener('submit', (e) => {
+                form.addEventListener('submit', async (e) => {
                     e.preventDefault();
+                    
+                    const { data: { user } } = await supabase.auth.getUser();
+                    if (!user) {
+                        alert('You must be logged in to upload tracks.');
+                        window.location.href = 'login.html';
+                        return;
+                    }
+
                     const btn = document.getElementById('submit-upload-btn');
-                    btn.innerText = 'Uploading...';
+                    btn.innerText = 'Uploading... Please wait...';
                     btn.disabled = true;
 
-                    // Simulate upload delay
-                    setTimeout(() => {
+                    try {
+                        const title = document.getElementById('track-title').value;
+                        const genre = document.getElementById('track-genre').value;
+                        const notes = document.getElementById('reviewer-notes').value;
+                        
+                        const normalFile = document.getElementById('normal-track').files[0];
+                        const extendedFile = document.getElementById('extended-track').files[0];
+
+                        // Upload Normal Track
+                        const normalPath = `${user.id}/${Date.now()}_${normalFile.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+                        const { error: normalError } = await supabase.storage.from('tracks').upload(normalPath, normalFile);
+                        if (normalError) throw normalError;
+                        const normalUrl = supabase.storage.from('tracks').getPublicUrl(normalPath).data.publicUrl;
+
+                        // Upload Extended Track (if any)
+                        let extendedUrl = null;
+                        if (extendedFile) {
+                            const extendedPath = `${user.id}/${Date.now()}_ext_${extendedFile.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+                            const { error: extendedError } = await supabase.storage.from('tracks').upload(extendedPath, extendedFile);
+                            if (extendedError) throw extendedError;
+                            extendedUrl = supabase.storage.from('tracks').getPublicUrl(extendedPath).data.publicUrl;
+                        }
+
+                        // Insert into database
+                        const { error: dbError } = await supabase.from('track_submissions').insert({
+                            user_id: user.id,
+                            title: title,
+                            genre: genre,
+                            normal_track_url: normalUrl,
+                            extended_track_url: extendedUrl,
+                            reviewer_notes: notes,
+                            status: 'pending'
+                        });
+
+                        if (dbError) throw dbError;
+
                         alert('Your track has been submitted for review successfully!');
-                        window.location.href = 'profile.html'; // Redirect back to profile
-                    }, 1500);
+                        window.location.href = 'profile.html';
+
+                    } catch (error) {
+                        console.error(error);
+                        alert('Error uploading track: ' + error.message);
+                        btn.innerText = 'Submit for Review';
+                        btn.disabled = false;
+                    }
                 });
             }
         });
