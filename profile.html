@@ -82,13 +82,12 @@
     <!-- Navigation Tabs -->
     <div class="sc-tabs-bar">
         <div class="sc-tabs-left">
-            <a href="#" class="sc-tab active">All</a>
-            <a href="#" class="sc-tab">Popular tracks</a>
-            <a href="#" class="sc-tab">Tracks</a>
-            <a href="#" class="sc-tab">Albums</a>
-            <a href="#" class="sc-tab">Playlists</a>
-            <a href="#" class="sc-tab">Reposts</a>
-            <a href="#" class="sc-tab">Support</a>
+            <a href="#" class="sc-tab active" data-target="tracks-view">All</a>
+            <a href="#" class="sc-tab" data-target="tracks-view">Popular tracks</a>
+            <a href="#" class="sc-tab" data-target="tracks-view">Tracks</a>
+            <a href="#" class="sc-tab" data-target="posts-view">Posts</a>
+            <a href="#" class="sc-tab" data-target="tracks-view">Albums</a>
+            <a href="#" class="sc-tab" data-target="tracks-view">Playlists</a>
         </div>
         <div class="sc-tabs-right">
             <button class="sc-btn sc-btn-gold">
@@ -121,7 +120,7 @@
     <!-- Main Content -->
     <main class="sc-main-content">
         <!-- Left Column: Spotlight -->
-        <div class="sc-spotlight-col">
+        <div class="sc-spotlight-col" id="tracks-view">
             <div class="sc-section-header">
                 <h2>Spotlight (5/5)</h2>
                 <button class="sc-btn-small">Edit Spotlight</button>
@@ -238,6 +237,16 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="sc-spotlight-col" id="posts-view" style="display: none;">
+            <div class="sc-section-header">
+                <h2>My Posts</h2>
+            </div>
+            <div id="profile-post-list" class="blog-post-list" style="margin-top: 20px;">
+                <!-- User posts will be injected here -->
+                <div style="color:#888;">Loading your posts...</div>
             </div>
         </div>
 
@@ -388,5 +397,7 @@
         </div>
     </div>
 
-<script type="module" src="auth.js"></script></body>
+<script type="module" src="auth.js"></script>
+<script type="module" src="profile.js"></script>
+</body>
 </html>
