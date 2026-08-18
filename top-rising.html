@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Rising - TarabBladi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="browse-page">
+    <!-- Navigation -->
+    <nav class="navbar solid-nav">
+        <div class="nav-container">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="8" width="2" height="8" fill="#e2b764" />
+                    <rect x="6" y="4" width="2" height="16" fill="#e2b764" />
+                    <rect x="10" y="10" width="2" height="4" fill="#e2b764" />
+                    <rect x="14" y="2" width="2" height="20" fill="#e2b764" />
+                    <rect x="18" y="6" width="2" height="12" fill="#e2b764" />
+                </svg>
+                <div class="logo-text">
+                    <span class="brand-name">TARABBLADI</span>
+                    <span class="brand-sub">ARABIC DJ RECORD POOL</span>
+                </div>
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="index.html">HOME</a></li>
+                <li><a href="browse.html">BROWSE</a></li>
+                <li><a href="charts.html">CHARTS</a></li>
+                <li><a href="blog.html">BLOG</a></li>
+                <li><a href="about.html">ABOUT US</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <!-- Nav actions will be populated by auth.js -->
+            </div>
+        </div>
+    </nav>
+
+    <div class="browse-wrapper">
+        <!-- Back Button -->
+        <div style="max-width: 1000px; margin: 20px auto 0; width: 100%;">
+            <a href="javascript:history.back()" style="display: inline-flex; align-items: center; gap: 8px; color: #888; text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: color 0.2s;" onmouseover="this.style.color='#e2b764'" onmouseout="this.style.color='#888'">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Back
+            </a>
+        </div>
+        
+        <!-- Page Header -->
+        <header class="browse-header" style="text-align: center; margin-bottom: 40px; margin-top: 20px;">
+            <h1><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="2" style="vertical-align: middle; margin-right: 10px;">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                <polyline points="17 6 23 6 23 12"></polyline>
+            </svg>TOP RISING</h1>
+            <p>The fastest growing tracks in our record pool right now.</p>
+        </header>
+
+        <div class="browse-layout" style="justify-content: center;">
+            <!-- Main Content -->
+            <main class="browse-main" style="flex: 0 0 100%; max-width: 1000px;">
+                <!-- Track Table -->
+                <div class="track-table">
+                    <div class="track-table-header">
+                        <div class="th-track">TRACK</div>
+                        <div class="th-genre">GENRE</div>
+                        <div class="th-bpm">BPM</div>
+                        <div class="th-key">KEY</div>
+                        <div class="th-version">VERSION</div>
+                        <div class="th-released">RELEASED</div>
+                        <div class="th-waveform"></div>
+                        <div class="th-actions"></div>
+                    </div>
+
+                    <div class="track-table-body" id="top-rising-list">
+                        <div class="empty-state" style="text-align: center; padding: 50px; color: #888; width: 100%;">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 15px; opacity: 0.5;">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                <polyline points="17 6 23 6 23 12"></polyline>
+                            </svg>
+                            <h2 style="font-size: 1.5rem; margin-bottom: 10px; color: #fff;">No tracks available</h2>
+                            <p>Check back later for the latest rising tracks.</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script type="module" src="auth.js"></script>
+</body>
+</html>
