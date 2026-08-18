@@ -38,7 +38,7 @@ async function loadPosts() {
         .from('posts')
         .select(`
             id, category, title, content, created_at,
-            profiles(display_name),
+            profiles!posts_user_id_fkey(display_name),
             likes(user_id),
             bookmarks(user_id),
             comments(id, content, created_at, profiles(display_name))
@@ -445,7 +445,7 @@ function setupEventListeners() {
                     title,
                     content
                 })
-                .select('id, category, title, content, created_at, profiles(display_name)')
+                .select('id, category, title, content, created_at, profiles!posts_user_id_fkey(display_name)')
                 .single();
 
             submitBtn.textContent = 'Post';
