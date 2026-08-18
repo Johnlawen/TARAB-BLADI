@@ -18,10 +18,58 @@ async function checkUser() {
             const navAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=111&color=e2b764`;
             
             navActions.innerHTML = `
-                <button class="nav-bell-btn" style="background: transparent; border: none; color: #fff; cursor: pointer; display: flex; align-items: center; position: relative; margin-right: 12px;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-                    <span style="position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; background: #e2b764; border-radius: 50%;"></span>
-                </button>
+                <div class="nav-bell-container" style="position: relative; display: flex; align-items: center; margin-right: 12px;">
+                    <button class="nav-bell-btn" style="background: transparent; border: none; color: #fff; cursor: pointer; display: flex; align-items: center; position: relative;" title="Notifications">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                        <span style="position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; background: #e2b764; border-radius: 50%;"></span>
+                    </button>
+                    <div class="nav-bell-dropdown" style="display: none; position: absolute; top: 100%; right: -10px; background: #111; border: 1px solid #333; border-radius: 8px; padding: 0; margin-top: 15px; width: 320px; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+                        <div style="padding: 15px; border-bottom: 1px solid #333; font-weight: 600; font-size: 1rem; color: #fff;">Notifications</div>
+                        <div style="max-height: 350px; overflow-y: auto;">
+                            <!-- Notification 1 -->
+                            <div style="padding: 12px 15px; border-bottom: 1px solid #222; display: flex; gap: 12px; align-items: flex-start; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#1a1a1a'" onmouseout="this.style.background='transparent'">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #333; flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                    <img src="https://ui-avatars.com/api/?name=DJ+Rami&background=222&color=fff" style="width: 100%; height: 100%; object-fit: cover;">
+                                </div>
+                                <div>
+                                    <p style="margin: 0; font-size: 0.9rem; color: #ddd;"><strong style="color: #fff;">DJ Rami</strong> followed you.</p>
+                                    <span style="font-size: 0.75rem; color: #888;">2 hours ago</span>
+                                </div>
+                            </div>
+                            <!-- Notification 2 -->
+                            <div style="padding: 12px 15px; border-bottom: 1px solid #222; display: flex; gap: 12px; align-items: flex-start; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#1a1a1a'" onmouseout="this.style.background='transparent'">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #333; flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                    <img src="https://ui-avatars.com/api/?name=Amir+Z&background=222&color=fff" style="width: 100%; height: 100%; object-fit: cover;">
+                                </div>
+                                <div>
+                                    <p style="margin: 0; font-size: 0.9rem; color: #ddd;"><strong style="color: #fff;">Amir Z</strong> liked your track "Habibi (Remix)".</p>
+                                    <span style="font-size: 0.75rem; color: #888;">5 hours ago</span>
+                                </div>
+                            </div>
+                            <!-- Notification 3 -->
+                            <div style="padding: 12px 15px; border-bottom: 1px solid #222; display: flex; gap: 12px; align-items: flex-start; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#1a1a1a'" onmouseout="this.style.background='transparent'">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #333; flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                                </div>
+                                <div>
+                                    <p style="margin: 0; font-size: 0.9rem; color: #ddd;"><strong style="color: #fff;">Sarah A</strong> downloaded your music.</p>
+                                    <span style="font-size: 0.75rem; color: #888;">1 day ago</span>
+                                </div>
+                            </div>
+                            <!-- Notification 4 -->
+                            <div style="padding: 12px 15px; display: flex; gap: 12px; align-items: flex-start; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#1a1a1a'" onmouseout="this.style.background='transparent'">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #333; flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+                                </div>
+                                <div>
+                                    <p style="margin: 0; font-size: 0.9rem; color: #ddd;"><strong style="color: #fff;">Omar K</strong> uploaded a new track: "Dabke Fire Edit".</p>
+                                    <span style="font-size: 0.75rem; color: #888;">2 days ago</span>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#" style="display: block; padding: 12px; text-align: center; color: #e2b764; text-decoration: none; font-size: 0.85rem; font-weight: 600; border-top: 1px solid #333;">View All Notifications</a>
+                    </div>
+                </div>
                 <div class="nav-user-menu-container" style="position: relative; display: flex; align-items: center;">
                     <div class="nav-user-menu" style="display: flex; align-items: center; gap: 8px; cursor: pointer;" title="Profile Menu">
                         <img src="${navAvatarUrl}" alt="Avatar" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid #e2b764;">
@@ -36,19 +84,35 @@ async function checkUser() {
                 </div>
             `;
             
-            // Handle Profile Menu click
+            // Handle Profile and Bell Menus click
             const profileMenu = document.querySelector('.nav-user-menu');
             const navDropdown = document.querySelector('.nav-dropdown');
-            if (profileMenu && navDropdown) {
+            const bellBtn = document.querySelector('.nav-bell-btn');
+            const bellDropdown = document.querySelector('.nav-bell-dropdown');
+
+            if (profileMenu && navDropdown && bellBtn && bellDropdown) {
                 profileMenu.addEventListener('click', (e) => {
                     e.stopPropagation();
+                    bellDropdown.style.display = 'none'; // close bell
                     navDropdown.style.display = navDropdown.style.display === 'none' ? 'block' : 'none';
                 });
+
+                bellBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    navDropdown.style.display = 'none'; // close profile
+                    bellDropdown.style.display = bellDropdown.style.display === 'none' ? 'block' : 'none';
+                    // Hide the notification dot when clicked
+                    const dot = bellBtn.querySelector('span');
+                    if (dot) dot.style.display = 'none';
+                });
                 
-                // Close dropdown when clicking outside
+                // Close dropdowns when clicking outside
                 document.addEventListener('click', (e) => {
                     if (!profileMenu.contains(e.target) && !navDropdown.contains(e.target)) {
                         navDropdown.style.display = 'none';
+                    }
+                    if (!bellBtn.contains(e.target) && !bellDropdown.contains(e.target)) {
+                        bellDropdown.style.display = 'none';
                     }
                 });
             }
