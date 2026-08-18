@@ -1,179 +1,352 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const navItems = document.querySelectorAll('.blog-nav-item');
-    let posts = Array.from(document.querySelectorAll('.blog-post'));
-    const postContainer = document.querySelector('.blog-post-list');
-    const tags = document.querySelectorAll('.blog-tag');
-    const sortSelect = document.querySelector('.blog-sort select');
-    const searchInput = document.querySelector('.search-input-wrapper input');
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
 
-    // --- LOCALSTORAGE SETUP ---
-    let dynamicPosts = JSON.parse(localStorage.getItem('tb_dynamic_posts')) || [];
-    let postStates = JSON.parse(localStorage.getItem('tb_post_states')) || {};
+const supabaseUrl = 'https://ktrmgxixbycdapcmwcih.supabase.co'
+const supabaseKey = 'sb_publishable_H01ibabwtUj6FLR-zie7Xw_74dDAmsP'
+const supabase = createClient(supabaseUrl, supabaseKey)
 
-    window.saveBlogState = function() {
-        localStorage.setItem('tb_dynamic_posts', JSON.stringify(dynamicPosts));
-        localStorage.setItem('tb_post_states', JSON.stringify(postStates));
-    };
+// DOM Elements
+const postContainer = document.querySelector('.blog-post-list');
+const navItems = document.querySelectorAll('.blog-nav-item');
+const tags = document.querySelectorAll('.blog-tag');
+const sortSelect = document.querySelector('.blog-sort select');
+const searchInput = document.querySelector('.search-input-wrapper input');
+const createPostBtn = document.getElementById('create-post-btn');
+const createPostModal = document.getElementById('create-post-modal');
+const closePostModal = document.getElementById('close-post-modal');
+const createPostForm = document.getElementById('create-post-form');
 
-    // Inject dynamic posts first
-    dynamicPosts.forEach(dp => {
-        const newPost = document.createElement('div');
-        newPost.className = 'blog-post';
-        newPost.dataset.id = dp.id;
-        newPost.dataset.category = dp.category;
-        newPost.dataset.index = dp.index;
-        newPost.innerHTML = dp.html;
-        postContainer.insertBefore(newPost, postContainer.firstChild); // Prepend so it's at top
-    });
+let currentFilter = 'All';
+let currentSort = 'Recent';
+let searchQuery = '';
 
-    // Re-query posts to include injected ones
-    posts = Array.from(document.querySelectorAll('.blog-post'));
+let allPosts = []; 
+let currentUser = null;
 
-    // Add data attributes if they don't exist and load state
-    posts.forEach((post, index) => {
-        if (!post.dataset.id) post.dataset.id = 'static-' + index;
-        if (!post.dataset.index) post.dataset.index = index;
-        
-        // Extract category
-        const badge = post.querySelector('.post-badge');
-        if (!post.dataset.category) {
-            if (badge) {
-                if (badge.classList.contains('badge-request')) post.dataset.category = 'Song Requests';
-                else if (badge.classList.contains('badge-release')) post.dataset.category = 'Releases & Edits';
-                else if (badge.classList.contains('badge-tips')) post.dataset.category = 'DJ Tips';
-                else post.dataset.category = 'General Discussion';
-            } else {
-                post.dataset.category = 'General Discussion';
-            }
-        }
+async function init() {
+    const { data: { user } } = await supabase.auth.getUser();
+    currentUser = user;
 
-        // Initialize or load state
-        let state = postStates[post.dataset.id];
-        if (!state) {
-            let initialLikes = 0;
-            let initialComments = 0;
-            const stats = post.querySelectorAll('.stat-item');
-            if (stats.length >= 2) {
-                initialComments = parseInt(stats[0].textContent.trim(), 10) || 0;
-                initialLikes = parseInt(stats[1].textContent.trim(), 10) || 0;
-            }
-            state = { likes: initialLikes, bookmarked: false, comments: [], initialCommentCount: initialComments };
-            postStates[post.dataset.id] = state;
-            window.saveBlogState();
-        }
-        
-        post.dataset.likes = state.likes;
-        post.dataset.bookmarked = state.bookmarked ? 'true' : 'false';
-        
-        // Apply bookmarked visual state immediately
-        const bookmarkBtn = post.querySelector('.icon-btn-border');
-        if (bookmarkBtn && state.bookmarked) {
-            bookmarkBtn.style.color = '#e2b764';
-            bookmarkBtn.style.borderColor = '#e2b764';
-            bookmarkBtn.querySelector('svg').style.fill = '#e2b764';
-        }
-        
-        // Apply likes and comments visual state
-        const stats = post.querySelectorAll('.stat-item');
-        if (stats.length >= 2) {
-            let likesCountElem = stats[1].querySelector('.like-count');
-            if (!likesCountElem) {
-                stats[1].innerHTML = `
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
-                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                    </svg>
-                    <span class="like-count">${state.likes}</span>
-                `;
-            } else {
-                likesCountElem.textContent = state.likes;
-            }
-            
-            let commentCountElem = stats[0].querySelector('.comment-count');
-            if (!commentCountElem) {
-                stats[0].innerHTML = `
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                    <span class="comment-count">${state.comments.length + state.initialCommentCount}</span>
-                `;
-            } else {
-                commentCountElem.textContent = state.comments.length + state.initialCommentCount;
-            }
-        }
-    });
+    await loadPosts();
+    setupEventListeners();
+}
 
-    let currentFilter = 'All'; // 'All', 'Song Requests', etc.
-    let currentSort = 'Recent'; // 'Recent', 'Popular'
-    let searchQuery = '';
+async function loadPosts() {
+    postContainer.innerHTML = '<div style="text-align:center; padding: 50px; color:#fff;">Loading posts...</div>';
+    
+    // Fetch posts with author info and interactions
+    const { data: posts, error } = await supabase
+        .from('posts')
+        .select(`
+            id, category, title, content, created_at,
+            profiles(display_name),
+            likes(user_id),
+            bookmarks(user_id),
+            comments(id, content, created_at, profiles(display_name))
+        `)
+        .order('created_at', { ascending: false });
 
-    function updatePosts() {
-        // Filter by category and search query
-        let visiblePosts = posts.filter(post => {
-            let matchesCategory = false;
-            if (currentFilter === 'All') {
-                matchesCategory = true;
-            } else if (currentFilter === 'Saved Posts') {
-                matchesCategory = post.dataset.bookmarked === 'true';
-            } else {
-                matchesCategory = post.dataset.category === currentFilter;
-            }
-            
-            const title = post.querySelector('.post-title').textContent.toLowerCase();
-            const excerpt = post.querySelector('.post-excerpt').textContent.toLowerCase();
-            const matchesSearch = title.includes(searchQuery) || excerpt.includes(searchQuery);
-            
-            return matchesCategory && matchesSearch;
-        });
+    if (error) {
+        console.error('Error fetching posts:', error);
+        postContainer.innerHTML = '<div style="color:red; text-align:center; padding: 20px;">Failed to load posts. Did you run the SQL setup?</div>';
+        return;
+    }
 
-        // Sort
-        visiblePosts.sort((a, b) => {
-            if (currentSort === 'Popular') {
-                return parseInt(b.dataset.likes) - parseInt(a.dataset.likes);
-            } else {
-                // Recent is by index (lower index first since they are in order of creation in HTML)
-                return parseInt(a.dataset.index) - parseInt(b.dataset.index);
-            }
-        });
+    allPosts = posts || [];
+    renderPosts();
+}
 
-        // Clear container and append sorted/filtered posts, or show empty state
-        if (visiblePosts.length === 0) {
-            postContainer.innerHTML = `
-                <div class="empty-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 100px 20px; color: #888; text-align: center; width: 100%;">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 15px; opacity: 0.5;">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                    <h2 style="font-size: 1.5rem; margin-bottom: 10px; color: #fff;">No posts yet</h2>
-                    <p>Be the first to start a discussion!</p>
-                </div>
-            `;
+function renderPosts() {
+    // Filter
+    let visiblePosts = allPosts.filter(p => {
+        let matchesCategory = false;
+        if (currentFilter === 'All') {
+            matchesCategory = true;
+        } else if (currentFilter === 'Saved Posts') {
+            matchesCategory = currentUser && p.bookmarks && p.bookmarks.some(b => b.user_id === currentUser.id);
         } else {
-            postContainer.innerHTML = '';
-            visiblePosts.forEach(post => postContainer.appendChild(post));
+            matchesCategory = p.category === currentFilter;
         }
+
+        const titleMatch = p.title.toLowerCase().includes(searchQuery);
+        const contentMatch = p.content.toLowerCase().includes(searchQuery);
+
+        return matchesCategory && (titleMatch || contentMatch);
+    });
+
+    // Sort
+    visiblePosts.sort((a, b) => {
+        if (currentSort === 'Popular') {
+            return ((b.likes && b.likes.length) || 0) - ((a.likes && a.likes.length) || 0);
+        } else {
+            return new Date(b.created_at) - new Date(a.created_at);
+        }
+    });
+
+    if (visiblePosts.length === 0) {
+        postContainer.innerHTML = `
+            <div class="empty-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 100px 20px; color: #888; text-align: center; width: 100%;">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 15px; opacity: 0.5;">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                <h2 style="font-size: 1.5rem; margin-bottom: 10px; color: #fff;">No posts found</h2>
+                <p>Be the first to start a discussion!</p>
+            </div>
+        `;
+        return;
     }
 
-    function setActiveNav(selectedText) {
-        navItems.forEach(item => {
-            if (item.textContent.trim() === selectedText) {
-                item.classList.add('active');
+    postContainer.innerHTML = '';
+    
+    for (const p of visiblePosts) {
+        const postEl = document.createElement('div');
+        postEl.className = 'blog-post';
+        
+        let badgeClass = 'badge-request'; 
+        if (p.category === 'Releases & Edits') badgeClass = 'badge-release';
+        else if (p.category === 'DJ Tips') badgeClass = 'badge-tips';
+        
+        let badgeHtml = p.category === 'General Discussion' ? '' : `<span class="post-badge ${badgeClass}">${p.category.toUpperCase()}</span>`;
+        
+        const username = p.profiles?.display_name || 'User';
+        const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=111&color=e2b764`;
+        
+        const isLiked = currentUser && p.likes && p.likes.some(l => l.user_id === currentUser.id);
+        const isBookmarked = currentUser && p.bookmarks && p.bookmarks.some(b => b.user_id === currentUser.id);
+        const likeColor = isLiked ? '#e2b764' : 'currentColor';
+        const likeFill = isLiked ? '#e2b764' : 'none';
+        
+        const bookmarkColor = isBookmarked ? '#e2b764' : '';
+        const bookmarkFill = isBookmarked ? '#e2b764' : 'none';
+
+        const comments = p.comments || [];
+        const likes = p.likes || [];
+
+        // Formatting time
+        const timeAgo = formatTimeAgo(new Date(p.created_at));
+
+        postEl.innerHTML = `
+            <div class="post-content-wrap">
+                ${badgeHtml}
+                <h2 class="post-title">${p.title}</h2>
+                <p class="post-excerpt">${p.content}</p>
+                <div class="post-footer">
+                    <div class="post-author">
+                        <img src="${avatarUrl}" alt="${username}">
+                        <span class="author-name">${username}</span>
+                        <span class="post-time">${timeAgo}</span>
+                    </div>
+                    <div class="post-stats">
+                        <span class="stat-item comment-btn" style="cursor: pointer;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            <span class="comment-count">${comments.length}</span>
+                        </span>
+                        <span class="stat-item like-btn" style="cursor: pointer; color: ${likeColor}">
+                            <svg class="like-svg" width="16" height="16" viewBox="0 0 24 24" fill="${likeFill}" stroke="${likeColor}" stroke-width="2" style="margin-right: 4px;">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                            <span class="like-count">${likes.length}</span>
+                        </span>
+                        <button class="icon-btn-border bookmark-btn" style="width: 32px; height: 32px; padding: 0; border-color: ${bookmarkColor}; color: ${bookmarkColor};">
+                            <svg class="bookmark-svg" width="14" height="14" viewBox="0 0 24 24" fill="${bookmarkFill}" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="post-comments-section" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid #333;">
+                <div class="comments-list" style="margin-bottom: 15px; max-height: 200px; overflow-y: auto;">
+                </div>
+                <div class="add-comment" style="display: flex; gap: 10px;">
+                    <img src="${currentUser ? `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.user_metadata?.username || 'You')}&background=111&color=e2b764` : 'https://ui-avatars.com/api/?name=U&background=111&color=fff'}" alt="You" style="width: 32px; height: 32px; border-radius: 50%;">
+                    <input type="text" class="comment-input" placeholder="Write a comment..." style="flex-grow: 1; padding: 8px 12px; background: #222; border: 1px solid #444; color: #fff; border-radius: 20px; outline: none;">
+                    <button class="submit-comment-btn btn-primary" style="padding: 6px 16px; font-size: 13px; border-radius: 20px;">Post</button>
+                </div>
+            </div>
+        `;
+        
+        postContainer.appendChild(postEl);
+        
+        // Attach Interactivity
+        const likeBtn = postEl.querySelector('.like-btn');
+        const likeSvg = postEl.querySelector('.like-svg');
+        const likeCountSpan = postEl.querySelector('.like-count');
+        const bookmarkBtn = postEl.querySelector('.bookmark-btn');
+        const bookmarkSvg = postEl.querySelector('.bookmark-svg');
+        const commentBtn = postEl.querySelector('.comment-btn');
+        const commentCountSpan = postEl.querySelector('.comment-count');
+        const commentsSection = postEl.querySelector('.post-comments-section');
+        const commentsList = postEl.querySelector('.comments-list');
+        const submitCommentBtn = postEl.querySelector('.submit-comment-btn');
+        const commentInput = postEl.querySelector('.comment-input');
+        
+        // Populate initial comments
+        if (comments.length === 0) {
+            commentsList.innerHTML = '<div style="color:#888; font-size:13px;">No comments yet.</div>';
+        } else {
+            comments.forEach(c => appendCommentUI(commentsList, c));
+        }
+
+        // Like Toggle
+        likeBtn.addEventListener('click', async () => {
+            if (!currentUser) return alert('Please log in to like posts.');
+            if (!p.likes) p.likes = [];
+            
+            const currentlyLiked = p.likes.some(l => l.user_id === currentUser.id);
+            if (currentlyLiked) {
+                // Unlike UI
+                p.likes = p.likes.filter(l => l.user_id !== currentUser.id);
+                likeSvg.style.fill = 'none';
+                likeSvg.style.stroke = 'currentColor';
+                likeBtn.style.color = '';
+                likeCountSpan.textContent = p.likes.length;
+                
+                // API
+                await supabase.from('likes').delete().eq('post_id', p.id).eq('user_id', currentUser.id);
             } else {
-                item.classList.remove('active');
+                // Like UI
+                p.likes.push({user_id: currentUser.id});
+                likeSvg.style.fill = '#e2b764';
+                likeSvg.style.stroke = '#e2b764';
+                likeBtn.style.color = '#e2b764';
+                likeCountSpan.textContent = p.likes.length;
+                
+                // API
+                await supabase.from('likes').insert({ post_id: p.id, user_id: currentUser.id });
+            }
+        });
+
+        // Bookmark Toggle
+        bookmarkBtn.addEventListener('click', async () => {
+            if (!currentUser) return alert('Please log in to save posts.');
+            if (!p.bookmarks) p.bookmarks = [];
+            
+            const currentlyBookmarked = p.bookmarks.some(b => b.user_id === currentUser.id);
+            if (currentlyBookmarked) {
+                // Unbookmark UI
+                p.bookmarks = p.bookmarks.filter(b => b.user_id !== currentUser.id);
+                bookmarkSvg.style.fill = 'none';
+                bookmarkBtn.style.color = '';
+                bookmarkBtn.style.borderColor = '';
+                
+                if (currentFilter === 'Saved Posts') {
+                    renderPosts(); // Refresh list if looking at saved posts
+                }
+                
+                // API
+                await supabase.from('bookmarks').delete().eq('post_id', p.id).eq('user_id', currentUser.id);
+            } else {
+                // Bookmark UI
+                p.bookmarks.push({user_id: currentUser.id});
+                bookmarkSvg.style.fill = '#e2b764';
+                bookmarkBtn.style.color = '#e2b764';
+                bookmarkBtn.style.borderColor = '#e2b764';
+                
+                // API
+                await supabase.from('bookmarks').insert({ post_id: p.id, user_id: currentUser.id });
+            }
+        });
+
+        // Comments Toggle
+        commentBtn.addEventListener('click', () => {
+            const isHidden = commentsSection.style.display === 'none';
+            commentsSection.style.display = isHidden ? 'block' : 'none';
+        });
+        
+        // Submit Comment
+        submitCommentBtn.addEventListener('click', async () => {
+            if (!currentUser) return alert('Please log in to comment.');
+            const val = commentInput.value.trim();
+            if (val) {
+                commentInput.value = '';
+                
+                if (commentsList.innerHTML.includes('No comments yet')) {
+                    commentsList.innerHTML = '';
+                }
+                
+                const tempUsername = currentUser.user_metadata?.display_name || currentUser.user_metadata?.username || 'You';
+                const newCommentObj = { content: val, profiles: { display_name: tempUsername }, created_at: new Date().toISOString() };
+                
+                appendCommentUI(commentsList, newCommentObj);
+                
+                if (!p.comments) p.comments = [];
+                p.comments.push(newCommentObj);
+                commentCountSpan.textContent = p.comments.length;
+                
+                // Scroll to bottom
+                commentsList.scrollTop = commentsList.scrollHeight;
+                
+                const { error } = await supabase.from('comments').insert({
+                    post_id: p.id,
+                    user_id: currentUser.id,
+                    content: val
+                });
+                
+                if (error) {
+                    console.error('Error posting comment:', error);
+                    alert('Failed to post comment.');
+                }
             }
         });
         
-        tags.forEach(tag => {
-            const tagText = tag.textContent.trim();
-            if (tagText === selectedText || 
-                (selectedText === 'Latest Posts' && tagText === 'All') || 
-                (selectedText === 'Popular' && tagText === 'All')) {
-                 tag.classList.add('active');
-            } else {
-                 tag.classList.remove('active');
-            }
+        commentInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') submitCommentBtn.click();
         });
     }
+}
 
-    // Event Listeners for Nav Menu
+function appendCommentUI(container, c) {
+    const cUsername = c.profiles?.display_name || 'User';
+    const cAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(cUsername)}&background=111&color=e2b764`;
+    
+    const cEl = document.createElement('div');
+    cEl.style.cssText = 'display: flex; gap: 10px; margin-bottom: 12px;';
+    cEl.innerHTML = `
+        <img src="${cAvatar}" alt="${cUsername}" style="width: 28px; height: 28px; border-radius: 50%;">
+        <div style="background: #2a2a2a; padding: 10px 14px; border-radius: 12px; font-size: 14px;">
+            <div style="font-weight: 600; color: #e2b764; margin-bottom: 4px; font-size: 13px;">${cUsername}</div>
+            <div>${c.content}</div>
+        </div>
+    `;
+    container.appendChild(cEl);
+}
+
+function formatTimeAgo(date) {
+    const seconds = Math.floor((new Date() - date) / 1000);
+    if (seconds < 60) return 'Just now';
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    if (days < 30) return `${days}d ago`;
+    return date.toLocaleDateString();
+}
+
+function setActiveNav(selectedText) {
+    navItems.forEach(item => {
+        if (item.textContent.trim() === selectedText) {
+            item.classList.add('active');
+        } else {
+            item.classList.remove('active');
+        }
+    });
+    
+    tags.forEach(tag => {
+        const tagText = tag.textContent.trim();
+        if (tagText === selectedText || 
+            (selectedText === 'Latest Posts' && tagText === 'All') || 
+            (selectedText === 'Popular' && tagText === 'All')) {
+             tag.classList.add('active');
+        } else {
+             tag.classList.remove('active');
+        }
+    });
+}
+
+function setupEventListeners() {
     navItems.forEach(item => {
         item.addEventListener('click', (e) => {
             e.preventDefault();
@@ -194,11 +367,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             setActiveNav(text);
-            updatePosts();
+            renderPosts();
         });
     });
 
-    // Event Listeners for Top Tags
     tags.forEach(tag => {
         tag.addEventListener('click', () => {
             const text = tag.textContent.trim();
@@ -209,11 +381,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentFilter = text;
                 setActiveNav(text);
             }
-            updatePosts();
+            renderPosts();
         });
     });
 
-    // Event Listener for Sort Select
     sortSelect.addEventListener('change', (e) => {
         currentSort = e.target.value;
         if (currentSort === 'Popular' && currentFilter === 'All') {
@@ -221,195 +392,22 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (currentSort === 'Recent' && currentFilter === 'All') {
             setActiveNav('Latest Posts');
         }
-        updatePosts();
+        renderPosts();
     });
 
-    // Event Listener for Search Input
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
             searchQuery = e.target.value.toLowerCase().trim();
-            updatePosts();
+            renderPosts();
         });
     }
 
-    // --- INTERACTIVITY LOGIC (LIKES & BOOKMARKS) ---
-    function attachInteractivity(post) {
-        const bookmarkBtn = post.querySelector('.icon-btn-border');
-        const stats = post.querySelectorAll('.stat-item');
-        
-        // 1. Like Logic (Heart Stat)
-        if (stats.length >= 2) {
-            let liked = false;
-            let likesCountElem = stats[1].querySelector('.like-count');
-            
-            // Re-structure existing stats to have a span for the number if it doesn't
-            if (!likesCountElem) {
-                const text = stats[1].textContent.trim();
-                stats[1].innerHTML = `
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
-                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                    </svg>
-                    <span class="like-count">${text}</span>
-                `;
-                likesCountElem = stats[1].querySelector('.like-count');
-            }
-
-            stats[1].style.cursor = 'pointer';
-            
-            stats[1].addEventListener('click', () => {
-                let state = postStates[post.dataset.id];
-                let currentLikes = state.likes;
-                const svg = stats[1].querySelector('svg');
-                let isLiked = post.dataset.isLiked === 'true';
-                
-                if (!isLiked) {
-                    currentLikes++;
-                    svg.style.fill = '#e2b764';
-                    svg.style.stroke = '#e2b764';
-                    stats[1].style.color = '#e2b764';
-                    post.dataset.isLiked = 'true';
-                } else {
-                    currentLikes--;
-                    svg.style.fill = 'none';
-                    svg.style.stroke = 'currentColor';
-                    stats[1].style.color = '';
-                    post.dataset.isLiked = 'false';
-                }
-                
-                state.likes = currentLikes;
-                post.dataset.likes = currentLikes;
-                stats[1].querySelector('.like-count').textContent = currentLikes;
-                window.saveBlogState();
-            });
-        }
-
-        // 2. Bookmark Logic (Bookmark Button)
-        if (bookmarkBtn) {
-            bookmarkBtn.addEventListener('click', () => {
-                let state = postStates[post.dataset.id];
-                let bookmarked = !state.bookmarked;
-                
-                if (bookmarked) {
-                    bookmarkBtn.style.color = '#e2b764';
-                    bookmarkBtn.style.borderColor = '#e2b764';
-                    bookmarkBtn.querySelector('svg').style.fill = '#e2b764';
-                } else {
-                    bookmarkBtn.style.color = '';
-                    bookmarkBtn.style.borderColor = '';
-                    bookmarkBtn.querySelector('svg').style.fill = 'none';
-                }
-                state.bookmarked = bookmarked;
-                post.dataset.bookmarked = bookmarked.toString();
-                window.saveBlogState();
-                
-                if (currentFilter === 'Saved Posts') {
-                    updatePosts();
-                }
-            });
-        }
-
-        // 3. Comment Logic (Message Bubble Stat)
-        if (stats.length >= 1) {
-            stats[0].style.cursor = 'pointer';
-            
-            let commentCountElem = stats[0].querySelector('.comment-count');
-            if (!commentCountElem) {
-                const text = stats[0].textContent.trim();
-                stats[0].innerHTML = `
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                    <span class="comment-count">${text}</span>
-                `;
-                commentCountElem = stats[0].querySelector('.comment-count');
-            }
-
-            stats[0].addEventListener('click', () => {
-                let commentsSection = post.querySelector('.post-comments-section');
-                if (commentsSection) {
-                    commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
-                } else {
-                    let state = postStates[post.dataset.id];
-                    commentsSection = document.createElement('div');
-                    commentsSection.className = 'post-comments-section';
-                    commentsSection.style.marginTop = '20px';
-                    commentsSection.style.paddingTop = '20px';
-                    commentsSection.style.borderTop = '1px solid #333';
-                    
-                    commentsSection.innerHTML = `
-                        <div class="comments-list" style="margin-bottom: 15px; max-height: 200px; overflow-y: auto;">
-                        </div>
-                        <div class="add-comment" style="display: flex; gap: 10px;">
-                            <img src="https://ui-avatars.com/api/?name=You&background=111&color=e2b764" alt="You" style="width: 32px; height: 32px; border-radius: 50%;">
-                            <input type="text" class="comment-input" placeholder="Write a comment..." style="flex-grow: 1; padding: 8px 12px; background: #222; border: 1px solid #444; color: #fff; border-radius: 20px; outline: none;">
-                            <button class="submit-comment-btn btn-primary" style="padding: 6px 16px; font-size: 13px; border-radius: 20px;">Post</button>
-                        </div>
-                    `;
-                    post.querySelector('.post-content-wrap').appendChild(commentsSection);
-                    
-                    const commentsList = commentsSection.querySelector('.comments-list');
-                    state.comments.forEach(c => {
-                        const newComment = document.createElement('div');
-                        newComment.style.display = 'flex';
-                        newComment.style.gap = '10px';
-                        newComment.style.marginBottom = '12px';
-                        newComment.innerHTML = `
-                            <img src="https://ui-avatars.com/api/?name=You&background=111&color=e2b764" alt="You" style="width: 28px; height: 28px; border-radius: 50%;">
-                            <div style="background: #2a2a2a; padding: 10px 14px; border-radius: 12px; font-size: 14px;">
-                                <div style="font-weight: 600; color: #e2b764; margin-bottom: 4px; font-size: 13px;">You</div>
-                                <div>${c}</div>
-                            </div>
-                        `;
-                        commentsList.appendChild(newComment);
-                    });
-
-                    const submitBtn = commentsSection.querySelector('.submit-comment-btn');
-                    const input = commentsSection.querySelector('.comment-input');
-                    
-                    submitBtn.addEventListener('click', () => {
-                        const val = input.value.trim();
-                        if (val) {
-                            const newComment = document.createElement('div');
-                            newComment.style.display = 'flex';
-                            newComment.style.gap = '10px';
-                            newComment.style.marginBottom = '12px';
-                            newComment.innerHTML = `
-                                <img src="https://ui-avatars.com/api/?name=You&background=111&color=e2b764" alt="You" style="width: 28px; height: 28px; border-radius: 50%;">
-                                <div style="background: #2a2a2a; padding: 10px 14px; border-radius: 12px; font-size: 14px;">
-                                    <div style="font-weight: 600; color: #e2b764; margin-bottom: 4px; font-size: 13px;">You</div>
-                                    <div>${val}</div>
-                                </div>
-                            `;
-                            commentsList.appendChild(newComment);
-                            input.value = '';
-                            
-                            state.comments.push(val);
-                            window.saveBlogState();
-                            
-                            let currentCount = parseInt(commentCountElem.textContent) || 0;
-                            commentCountElem.textContent = currentCount + 1;
-                        }
-                    });
-
-                    input.addEventListener('keypress', (e) => {
-                        if (e.key === 'Enter') submitBtn.click();
-                    });
-                }
-            });
-        }
-    }
-
-    // Attach listeners to existing posts
-    posts.forEach(attachInteractivity);
-
-    // --- CREATE POST MODAL LOGIC ---
-    const createPostBtn = document.getElementById('create-post-btn');
-    const createPostModal = document.getElementById('create-post-modal');
-    const closePostModal = document.getElementById('close-post-modal');
-    const createPostForm = document.getElementById('create-post-form');
-
     if (createPostBtn && createPostModal) {
         createPostBtn.addEventListener('click', () => {
+            if (!currentUser) {
+                alert("You must be logged in to create a post.");
+                return;
+            }
             createPostModal.style.display = 'flex';
         });
 
@@ -417,87 +415,58 @@ document.addEventListener('DOMContentLoaded', () => {
             createPostModal.style.display = 'none';
         });
 
-        createPostModal.querySelector('.sub-modal-overlay').addEventListener('click', () => {
-            createPostModal.style.display = 'none';
-        });
-
-        createPostForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const category = document.getElementById('post-category').value;
-            const title = document.getElementById('post-title').value;
-            const content = document.getElementById('post-content').value;
-
-            let badgeClass = 'badge-request'; 
-            if (category === 'Releases & Edits') badgeClass = 'badge-release';
-            else if (category === 'DJ Tips') badgeClass = 'badge-tips';
-            
-            let badgeHtml = category === 'General Discussion' ? '' : `<span class="post-badge ${badgeClass}">${category.toUpperCase()}</span>`;
-
-            const newPostId = 'dynamic-' + Date.now();
-            const newPost = document.createElement('div');
-            newPost.className = 'blog-post';
-            newPost.dataset.id = newPostId;
-            newPost.dataset.category = category;
-            newPost.dataset.likes = '0';
-            
-            // Dynamic index to make it appear first in 'Recent' view
-            const minIndex = Math.min(...posts.map(p => parseInt(p.dataset.index) || 0), 0);
-            newPost.dataset.index = minIndex - 1;
-
-            const htmlContent = `
-                <div class="post-content-wrap">
-                    ${badgeHtml}
-                    <h2 class="post-title">${title}</h2>
-                    <p class="post-excerpt">${content}</p>
-                    <div class="post-footer">
-                        <div class="post-author">
-                            <img src="https://i.pravatar.cc/150?u=newuser" alt="You">
-                            <span class="author-name">You</span>
-                            <span class="post-time">Just now</span>
-                        </div>
-                        <div class="post-stats">
-                            <span class="stat-item">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
-                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                                </svg>
-                                <span class="comment-count">0</span>
-                            </span>
-                            <span class="stat-item">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
-                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                                </svg>
-                                <span class="like-count">0</span>
-                            </span>
-                            <button class="icon-btn-border" style="width: 32px; height: 32px; padding: 0;">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            newPost.innerHTML = htmlContent;
-
-            // Persist new post
-            postStates[newPostId] = { likes: 0, bookmarked: false, comments: [], initialCommentCount: 0 };
-            dynamicPosts.push({
-                id: newPostId,
-                category: category,
-                index: newPost.dataset.index,
-                html: htmlContent
-            });
-            window.saveBlogState();
-
-            attachInteractivity(newPost);
-            posts.push(newPost);
-            updatePosts();
-
-            createPostModal.style.display = 'none';
-            createPostForm.reset();
+        createPostModal.addEventListener('click', (e) => {
+            if (e.target === createPostModal.querySelector('.sub-modal-overlay')) {
+                createPostModal.style.display = 'none';
+            }
         });
     }
 
-    // Initial render call to set up the default view
-    updatePosts();
-});
+    if (createPostForm) {
+        createPostForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser) return;
+
+            const category = document.getElementById('post-category').value;
+            const title = document.getElementById('post-title').value.trim();
+            const content = document.getElementById('post-content').value.trim();
+
+            if (!title || !content) return;
+
+            const submitBtn = createPostForm.querySelector('button[type="submit"]');
+            submitBtn.textContent = 'Posting...';
+            submitBtn.disabled = true;
+
+            const { data, error } = await supabase
+                .from('posts')
+                .insert({
+                    user_id: currentUser.id,
+                    category,
+                    title,
+                    content
+                })
+                .select('id, category, title, content, created_at, profiles(display_name)')
+                .single();
+
+            submitBtn.textContent = 'Post';
+            submitBtn.disabled = false;
+
+            if (error) {
+                console.error('Error creating post:', error);
+                alert('Failed to create post.');
+                return;
+            }
+
+            data.likes = [];
+            data.bookmarks = [];
+            data.comments = [];
+            allPosts.unshift(data); // Add to top
+
+            createPostModal.style.display = 'none';
+            createPostForm.reset();
+            renderPosts();
+        });
+    }
+}
+
+init();
