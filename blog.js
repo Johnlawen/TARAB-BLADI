@@ -1,33 +1,104 @@
 document.addEventListener('DOMContentLoaded', () => {
     const navItems = document.querySelectorAll('.blog-nav-item');
-    const posts = Array.from(document.querySelectorAll('.blog-post'));
+    let posts = Array.from(document.querySelectorAll('.blog-post'));
     const postContainer = document.querySelector('.blog-post-list');
     const tags = document.querySelectorAll('.blog-tag');
     const sortSelect = document.querySelector('.blog-sort select');
     const searchInput = document.querySelector('.search-input-wrapper input');
 
-    // Add data attributes if they don't exist
+    // --- LOCALSTORAGE SETUP ---
+    let dynamicPosts = JSON.parse(localStorage.getItem('tb_dynamic_posts')) || [];
+    let postStates = JSON.parse(localStorage.getItem('tb_post_states')) || {};
+
+    window.saveBlogState = function() {
+        localStorage.setItem('tb_dynamic_posts', JSON.stringify(dynamicPosts));
+        localStorage.setItem('tb_post_states', JSON.stringify(postStates));
+    };
+
+    // Inject dynamic posts first
+    dynamicPosts.forEach(dp => {
+        const newPost = document.createElement('div');
+        newPost.className = 'blog-post';
+        newPost.dataset.id = dp.id;
+        newPost.dataset.category = dp.category;
+        newPost.dataset.index = dp.index;
+        newPost.innerHTML = dp.html;
+        postContainer.insertBefore(newPost, postContainer.firstChild); // Prepend so it's at top
+    });
+
+    // Re-query posts to include injected ones
+    posts = Array.from(document.querySelectorAll('.blog-post'));
+
+    // Add data attributes if they don't exist and load state
     posts.forEach((post, index) => {
-        post.dataset.index = index;
+        if (!post.dataset.id) post.dataset.id = 'static-' + index;
+        if (!post.dataset.index) post.dataset.index = index;
         
         // Extract category
         const badge = post.querySelector('.post-badge');
-        if (badge) {
-            if (badge.classList.contains('badge-request')) post.dataset.category = 'Song Requests';
-            else if (badge.classList.contains('badge-release')) post.dataset.category = 'Releases & Edits';
-            else if (badge.classList.contains('badge-tips')) post.dataset.category = 'DJ Tips';
-            else post.dataset.category = 'General Discussion';
-        } else {
-            post.dataset.category = 'General Discussion';
+        if (!post.dataset.category) {
+            if (badge) {
+                if (badge.classList.contains('badge-request')) post.dataset.category = 'Song Requests';
+                else if (badge.classList.contains('badge-release')) post.dataset.category = 'Releases & Edits';
+                else if (badge.classList.contains('badge-tips')) post.dataset.category = 'DJ Tips';
+                else post.dataset.category = 'General Discussion';
+            } else {
+                post.dataset.category = 'General Discussion';
+            }
         }
 
-        // Extract likes
+        // Initialize or load state
+        let state = postStates[post.dataset.id];
+        if (!state) {
+            let initialLikes = 0;
+            let initialComments = 0;
+            const stats = post.querySelectorAll('.stat-item');
+            if (stats.length >= 2) {
+                initialComments = parseInt(stats[0].textContent.trim(), 10) || 0;
+                initialLikes = parseInt(stats[1].textContent.trim(), 10) || 0;
+            }
+            state = { likes: initialLikes, bookmarked: false, comments: [], initialCommentCount: initialComments };
+            postStates[post.dataset.id] = state;
+            window.saveBlogState();
+        }
+        
+        post.dataset.likes = state.likes;
+        post.dataset.bookmarked = state.bookmarked ? 'true' : 'false';
+        
+        // Apply bookmarked visual state immediately
+        const bookmarkBtn = post.querySelector('.icon-btn-border');
+        if (bookmarkBtn && state.bookmarked) {
+            bookmarkBtn.style.color = '#e2b764';
+            bookmarkBtn.style.borderColor = '#e2b764';
+            bookmarkBtn.querySelector('svg').style.fill = '#e2b764';
+        }
+        
+        // Apply likes and comments visual state
         const stats = post.querySelectorAll('.stat-item');
         if (stats.length >= 2) {
-            const likesText = stats[1].textContent.trim();
-            post.dataset.likes = parseInt(likesText, 10) || 0;
-        } else {
-            post.dataset.likes = 0;
+            let likesCountElem = stats[1].querySelector('.like-count');
+            if (!likesCountElem) {
+                stats[1].innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                    <span class="like-count">${state.likes}</span>
+                `;
+            } else {
+                likesCountElem.textContent = state.likes;
+            }
+            
+            let commentCountElem = stats[0].querySelector('.comment-count');
+            if (!commentCountElem) {
+                stats[0].innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <span class="comment-count">${state.comments.length + state.initialCommentCount}</span>
+                `;
+            } else {
+                commentCountElem.textContent = state.comments.length + state.initialCommentCount;
+            }
         }
     });
 
@@ -186,30 +257,38 @@ document.addEventListener('DOMContentLoaded', () => {
             stats[1].style.cursor = 'pointer';
             
             stats[1].addEventListener('click', () => {
-                let currentLikes = parseInt(post.dataset.likes) || 0;
+                let state = postStates[post.dataset.id];
+                let currentLikes = state.likes;
                 const svg = stats[1].querySelector('svg');
-                if (!liked) {
+                let isLiked = post.dataset.isLiked === 'true';
+                
+                if (!isLiked) {
                     currentLikes++;
                     svg.style.fill = '#e2b764';
                     svg.style.stroke = '#e2b764';
                     stats[1].style.color = '#e2b764';
+                    post.dataset.isLiked = 'true';
                 } else {
                     currentLikes--;
                     svg.style.fill = 'none';
                     svg.style.stroke = 'currentColor';
                     stats[1].style.color = '';
+                    post.dataset.isLiked = 'false';
                 }
-                liked = !liked;
+                
+                state.likes = currentLikes;
                 post.dataset.likes = currentLikes;
-                likesCountElem.textContent = currentLikes;
+                stats[1].querySelector('.like-count').textContent = currentLikes;
+                window.saveBlogState();
             });
         }
 
         // 2. Bookmark Logic (Bookmark Button)
         if (bookmarkBtn) {
-            let bookmarked = post.dataset.bookmarked === 'true';
             bookmarkBtn.addEventListener('click', () => {
-                bookmarked = !bookmarked;
+                let state = postStates[post.dataset.id];
+                let bookmarked = !state.bookmarked;
+                
                 if (bookmarked) {
                     bookmarkBtn.style.color = '#e2b764';
                     bookmarkBtn.style.borderColor = '#e2b764';
@@ -219,7 +298,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     bookmarkBtn.style.borderColor = '';
                     bookmarkBtn.querySelector('svg').style.fill = 'none';
                 }
+                state.bookmarked = bookmarked;
                 post.dataset.bookmarked = bookmarked.toString();
+                window.saveBlogState();
+                
                 if (currentFilter === 'Saved Posts') {
                     updatePosts();
                 }
@@ -247,6 +329,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (commentsSection) {
                     commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
                 } else {
+                    let state = postStates[post.dataset.id];
                     commentsSection = document.createElement('div');
                     commentsSection.className = 'post-comments-section';
                     commentsSection.style.marginTop = '20px';
@@ -264,9 +347,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                     post.querySelector('.post-content-wrap').appendChild(commentsSection);
                     
+                    const commentsList = commentsSection.querySelector('.comments-list');
+                    state.comments.forEach(c => {
+                        const newComment = document.createElement('div');
+                        newComment.style.display = 'flex';
+                        newComment.style.gap = '10px';
+                        newComment.style.marginBottom = '12px';
+                        newComment.innerHTML = `
+                            <img src="https://ui-avatars.com/api/?name=You&background=111&color=e2b764" alt="You" style="width: 28px; height: 28px; border-radius: 50%;">
+                            <div style="background: #2a2a2a; padding: 10px 14px; border-radius: 12px; font-size: 14px;">
+                                <div style="font-weight: 600; color: #e2b764; margin-bottom: 4px; font-size: 13px;">You</div>
+                                <div>${c}</div>
+                            </div>
+                        `;
+                        commentsList.appendChild(newComment);
+                    });
+
                     const submitBtn = commentsSection.querySelector('.submit-comment-btn');
                     const input = commentsSection.querySelector('.comment-input');
-                    const commentsList = commentsSection.querySelector('.comments-list');
                     
                     submitBtn.addEventListener('click', () => {
                         const val = input.value.trim();
@@ -284,6 +382,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             `;
                             commentsList.appendChild(newComment);
                             input.value = '';
+                            
+                            state.comments.push(val);
+                            window.saveBlogState();
                             
                             let currentCount = parseInt(commentCountElem.textContent) || 0;
                             commentCountElem.textContent = currentCount + 1;
@@ -332,8 +433,10 @@ document.addEventListener('DOMContentLoaded', () => {
             
             let badgeHtml = category === 'General Discussion' ? '' : `<span class="post-badge ${badgeClass}">${category.toUpperCase()}</span>`;
 
+            const newPostId = 'dynamic-' + Date.now();
             const newPost = document.createElement('div');
             newPost.className = 'blog-post';
+            newPost.dataset.id = newPostId;
             newPost.dataset.category = category;
             newPost.dataset.likes = '0';
             
@@ -341,7 +444,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const minIndex = Math.min(...posts.map(p => parseInt(p.dataset.index) || 0), 0);
             newPost.dataset.index = minIndex - 1;
 
-            newPost.innerHTML = `
+            const htmlContent = `
                 <div class="post-content-wrap">
                     ${badgeHtml}
                     <h2 class="post-title">${title}</h2>
@@ -357,7 +460,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
                                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                                 </svg>
-                                0
+                                <span class="comment-count">0</span>
                             </span>
                             <span class="stat-item">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
@@ -374,6 +477,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             `;
+            newPost.innerHTML = htmlContent;
+
+            // Persist new post
+            postStates[newPostId] = { likes: 0, bookmarked: false, comments: [], initialCommentCount: 0 };
+            dynamicPosts.push({
+                id: newPostId,
+                category: category,
+                index: newPost.dataset.index,
+                html: htmlContent
+            });
+            window.saveBlogState();
 
             attachInteractivity(newPost);
             posts.push(newPost);
