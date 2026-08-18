@@ -231,6 +231,63 @@
             </div>
         </div>
     </div>
-<script type="module" src="auth.js"></script></body>
+<script type="module" src="auth.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tabs = document.querySelectorAll('.charts-tab');
+        const headerTitle = document.querySelector('.charts-hero-content h1');
+        const headerDesc = document.querySelector('.charts-hero-content p');
+        const emptyStateText = document.querySelector('.charts-tbody .empty-state h2');
+        const emptyStateSub = document.querySelector('.charts-tbody .empty-state p');
+
+        const tabData = {
+            'TOP 100': {
+                title: 'CHARTS',
+                desc: 'Discover the top 100<br>tracks by DJs this week.',
+                emptyMsg: 'No tracks available',
+                emptySub: 'There are no songs uploaded yet.'
+            },
+            'TOP DOWNLOADS': {
+                title: 'TOP DOWNLOADS',
+                desc: 'The most downloaded tracks<br>by our community.',
+                emptyMsg: 'No downloaded tracks',
+                emptySub: 'Tracks will appear here once they are downloaded.'
+            },
+            'TRENDING': {
+                title: 'TRENDING',
+                desc: 'What DJs are playing<br>right now.',
+                emptyMsg: 'No trending tracks',
+                emptySub: 'Trending data is currently unavailable.'
+            },
+            'NEW RELEASES': {
+                title: 'NEW RELEASES',
+                desc: 'The freshest drops<br>and exclusive edits.',
+                emptyMsg: 'No new releases',
+                emptySub: 'Check back soon for new tracks.'
+            }
+        };
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active from all tabs
+                tabs.forEach(t => t.classList.remove('active'));
+                // Add active to clicked tab
+                tab.classList.add('active');
+
+                // Get tab text (ignoring SVG)
+                const tabText = tab.innerText.trim();
+                
+                // Update content based on tab
+                if (tabData[tabText]) {
+                    if (headerTitle) headerTitle.innerHTML = tabData[tabText].title;
+                    if (headerDesc) headerDesc.innerHTML = tabData[tabText].desc;
+                    if (emptyStateText) emptyStateText.innerText = tabData[tabText].emptyMsg;
+                    if (emptyStateSub) emptyStateSub.innerText = tabData[tabText].emptySub;
+                }
+            });
+        });
+    });
+</script>
+</body>
 
 </html>
