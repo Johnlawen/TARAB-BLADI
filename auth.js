@@ -201,10 +201,14 @@ async function checkUser() {
                 
                 // Update Cover Photo
                 const coverImage = document.querySelector('.sc-cover-image');
+                const coverPlaceholder = document.querySelector('.sc-cover-placeholder');
                 if (coverImage && profile && profile.cover_url) {
                     coverImage.style.backgroundImage = `url('${profile.cover_url}')`;
                     coverImage.style.backgroundSize = 'cover';
                     coverImage.style.backgroundPosition = 'center';
+                    if (coverPlaceholder) {
+                        coverPlaceholder.style.display = 'none';
+                    }
                 }
                 
                 // Empty the track list
