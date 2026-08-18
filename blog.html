@@ -63,7 +63,7 @@
                     </svg>
                     <input type="text" placeholder="Search posts...">
                 </div>
-                <button class="btn-primary flex-shrink-0" style="display:flex; align-items:center; gap:8px;">
+                <button id="create-post-btn" class="btn-primary flex-shrink-0" style="display:flex; align-items:center; gap:8px;">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="12" y1="5" x2="12" y2="19"></line>
                         <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -506,6 +506,34 @@
                     <a href="#" class="view-all-small mt-3 d-inline-block">See full rules &rarr;</a>
                 </div>
             </aside>
+        </div>
+    </div>
+    <!-- Create Post Modal -->
+    <div class="sub-modal-container" id="create-post-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
+        <div class="sub-modal-overlay" style="position: absolute; width: 100%; height: 100%;"></div>
+        <div class="sub-modal-content" style="background: #1a1a1a; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; position: relative; z-index: 1001; border: 1px solid #333;">
+            <button class="sub-modal-close" id="close-post-modal" style="position: absolute; top: 15px; right: 20px; background: none; border: none; color: #888; font-size: 24px; cursor: pointer;">&times;</button>
+            <h2 style="color: #fff; margin-bottom: 20px;">Create Post</h2>
+            <form id="create-post-form" style="display: flex; flex-direction: column; gap: 15px;">
+                <div>
+                    <label style="color: #ccc; font-size: 14px; margin-bottom: 5px; display: block;">Category</label>
+                    <select id="post-category" required style="width: 100%; padding: 12px; background: #222; border: 1px solid #444; color: #fff; border-radius: 6px;">
+                        <option value="General Discussion">General Discussion</option>
+                        <option value="Song Requests">Song Requests</option>
+                        <option value="Releases & Edits">Releases & Edits</option>
+                        <option value="DJ Tips">DJ Tips</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="color: #ccc; font-size: 14px; margin-bottom: 5px; display: block;">Title</label>
+                    <input type="text" id="post-title" required placeholder="Post Title" style="width: 100%; padding: 12px; background: #222; border: 1px solid #444; color: #fff; border-radius: 6px;">
+                </div>
+                <div>
+                    <label style="color: #ccc; font-size: 14px; margin-bottom: 5px; display: block;">Content</label>
+                    <textarea id="post-content" required placeholder="What do you want to talk about?" rows="5" style="width: 100%; padding: 12px; background: #222; border: 1px solid #444; color: #fff; border-radius: 6px; resize: vertical;"></textarea>
+                </div>
+                <button type="submit" class="btn-primary" style="margin-top: 10px;">Post</button>
+            </form>
         </div>
     </div>
 <script src="blog.js"></script>
