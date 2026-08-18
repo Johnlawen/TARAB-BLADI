@@ -408,6 +408,88 @@
             // Toggle Logic
             header.addEventListener('click', () => {
                 dropdown.classList.toggle('active');
+</div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination">
+                    <button class="page-nav">&lt;</button>
+                    <button class="page-num active">1</button>
+                    <button class="page-num">2</button>
+                    <button class="page-num">3</button>
+                    <button class="page-num">4</button>
+                    <button class="page-num">5</button>
+                    <span class="page-dots">...</span>
+                    <button class="page-num">20</button>
+                    <button class="page-nav">&gt;</button>
+                </div>
+            </main>
+        </div>
+
+        <!-- Bottom Banner -->
+        <div class="bottom-banner">
+            <div class="banner-content">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="1.5">
+                    <path d="M9 18V5l12-2v13"></path>
+                    <circle cx="6" cy="18" r="3"></circle>
+                    <circle cx="18" cy="16" r="3"></circle>
+                </svg>
+                <div class="banner-text">
+                    <h3>JOIN TARABBLADI TODAY</h3>
+                    <p>Get unlimited downloads, high quality WAV, and access to exclusive edits.</p>
+                </div>
+            </div>
+            <a href="#" class="btn-primary">START FREE TRIAL</a>
+        </div>
+    </div>
+<script type="module" src="auth.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const filterItems = document.querySelectorAll('.filter-list li');
+        
+        const filterOptions = {
+            'Genre': ['Arabic House', 'Afro Arabic', 'Oriental Edit', 'Dabke Remix', 'Club Edit'],
+            'BPM': ['115-120', '120-125', '125-130', '130+'],
+            'Key': ['A Minor', 'C Minor', 'D Minor', 'E Minor', 'G Minor'],
+            'Mood': ['Energetic', 'Chill', 'Dark', 'Happy', 'Party'],
+            'Language': ['Arabic', 'English', 'Instrumental'],
+            'Version': ['Extended Mix', 'Edit', 'Radio Edit', 'Acapella'],
+            'Artists': ['Amr Diab', 'Nancy Ajram', 'Mohamed Ramadan', 'Elissa', 'DJL'],
+            'Release Date': ['This Week', 'This Month', 'This Year', 'Older']
+        };
+
+        filterItems.forEach(li => {
+            const filterItem = li.querySelector('.filter-item');
+            const chevron = li.querySelector('.chevron');
+            const titleSpan = filterItem ? filterItem.querySelector('span') : null;
+            
+            if (!titleSpan) return;
+            const filterName = titleSpan.innerText.trim();
+            
+            // Create Header
+            const header = document.createElement('div');
+            header.className = 'filter-header';
+            header.appendChild(filterItem);
+            header.appendChild(chevron);
+            li.appendChild(header);
+            
+            // Create Dropdown
+            const dropdown = document.createElement('div');
+            dropdown.className = 'filter-dropdown';
+            
+            const options = filterOptions[filterName] || ['Option 1', 'Option 2'];
+            options.forEach(opt => {
+                const label = document.createElement('label');
+                label.className = 'filter-checkbox';
+                label.innerHTML = `<input type="checkbox" value="${opt}" onchange="applyFilters()"> ${opt}`;
+                dropdown.appendChild(label);
+            });
+            
+            li.appendChild(dropdown);
+            
+            // Toggle Logic
+            header.addEventListener('click', () => {
+                dropdown.classList.toggle('active');
                 chevron.classList.toggle('open');
             });
         });
@@ -417,22 +499,45 @@
         const checkedBoxes = Array.from(document.querySelectorAll('.filter-checkbox input:checked')).map(cb => cb.value.toLowerCase());
         const trackRows = document.querySelectorAll('.track-table-body .track-row');
         
-        if (checkedBoxes.length === 0) {
-            trackRows.forEach(row => row.style.display = '');
-            return;
-        }
+        const activeTab = document.querySelector('.genre-tab.active span');
+        const activeGenre = activeTab ? activeTab.innerText.trim().toLowerCase() : 'all music';
         
         trackRows.forEach(row => {
             const rowText = row.innerText.toLowerCase();
-            // Simple OR logic: show row if it matches AT LEAST ONE of the selected checkboxes
-            const matches = checkedBoxes.some(val => {
-                // For BPM ranges, do a basic string match or handle specific ranges if needed. 
-                // We'll just do a text include for now which covers most genres/keys/artists nicely.
-                return rowText.includes(val);
-            });
-            row.style.display = matches ? '' : 'none';
+            
+            // Check checkbox filters
+            let matchesCheckboxes = true;
+            if (checkedBoxes.length > 0) {
+                matchesCheckboxes = checkedBoxes.some(val => rowText.includes(val));
+            }
+            
+            // Check genre tab filter
+            let matchesGenre = true;
+            if (activeGenre !== 'all music') {
+                // For 'Oriental Edits', 'Arabic House', etc., match the text in the row
+                // Strip the plural 's' from 'Edits' or 'Remixes' if needed, or just do a straight include
+                // Since the UI says "Oriental Edits" and the genre in the row might say "Oriental Edit", we check the base string
+                let searchGenre = activeGenre.replace(' edits', ' edit').replace(' remixes', ' remix').replace(' bangers', ' banger');
+                matchesGenre = rowText.includes(searchGenre);
+            }
+            
+            row.style.display = (matchesCheckboxes && matchesGenre) ? '' : 'none';
         });
     };
+
+    // Add event listeners for genre tabs
+    const genreTabs = document.querySelectorAll('.genre-tab');
+    genreTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            // Remove active class from all tabs
+            genreTabs.forEach(t => t.classList.remove('active'));
+            // Add active class to clicked tab
+            tab.classList.add('active');
+            
+            // Re-apply filters
+            applyFilters();
+        });
+    });
 </script>
 </body>
 
