@@ -366,15 +366,29 @@
     }
 
     async function loadTrack() {
+        // Step 1: fetch the track by id (no join - works reliably)
         const { data: sub, error } = await _sb
             .from('track_submissions')
-            .select('*, profiles(display_name, bio, avatar_url)')
+            .select('*')
             .eq('id', trackId)
             .single();
 
-        if (error || !sub) { document.getElementById('track-title').textContent = 'Track not found'; return; }
+        if (error || !sub) {
+            console.error('Track fetch error:', error);
+            document.getElementById('track-title').textContent = 'Track not found';
+            return;
+        }
 
-        const artistName = sub.profiles?.display_name || 'Unknown Artist';
+        // Step 2: fetch the artist profile separately
+        let artistProfile = null;
+        const { data: prof } = await _sb
+            .from('profiles')
+            .select('display_name, bio, avatar_url')
+            .eq('id', sub.user_id)
+            .maybeSingle();
+        artistProfile = prof;
+
+        const artistName = artistProfile?.display_name || 'Unknown Artist';
         const dateStr = new Date(sub.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
         document.getElementById('track-title').textContent = sub.title;
@@ -397,11 +411,12 @@
         }
 
         document.getElementById('artist-card-name').textContent = artistName;
-        document.getElementById('artist-bio').textContent = sub.profiles?.bio || 'TarabBladi artist. Check out their latest tracks.';
-        const initials = artistName.split(' ').map(function(w){ return w[0]; }).join('').toUpperCase().slice(0,2);
+        document.getElementById('artist-bio').textContent = artistProfile?.bio || 'TarabBladi artist. Check out their latest tracks.';
+
+        const initials = artistName.split(' ').map(function(w){ return w[0]; }).join('').toUpperCase().slice(0, 2);
         const avatarEl = document.getElementById('artist-avatar');
-        if (sub.profiles?.avatar_url) {
-            avatarEl.innerHTML = '<img src="' + sub.profiles.avatar_url + '" alt="' + artistName + '">';
+        if (artistProfile?.avatar_url) {
+            avatarEl.innerHTML = '<img src="' + artistProfile.avatar_url + '" alt="' + artistName + '">';
         } else {
             avatarEl.textContent = initials;
         }
@@ -416,7 +431,7 @@
         audio.addEventListener('ended', function() { setPlayIcon(true); });
 
         // Draw waveform after a short delay to ensure canvas is sized
-        setTimeout(drawWaveform, 100);
+        setTimeout(drawWaveform, 150);
 
         // Like state
         if (currentUser) {
@@ -425,6 +440,7 @@
             if (like) setLiked(true);
         }
     }
+
 
     // --- Player ---
     function togglePlay() {
