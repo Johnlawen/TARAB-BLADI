@@ -216,7 +216,10 @@
                         // Upload Normal Track
                         const normalPath = `${user.id}/${Date.now()}_${normalFile.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
                         const { error: normalError } = await supabase.storage.from('tracks').upload(normalPath, normalFile);
-                        if (normalError) throw normalError;
+                        if (normalError) {
+                            console.error("Storage upload error (normal):", normalError);
+                            throw new Error("Storage Upload (Normal): " + normalError.message);
+                        }
                         const normalUrl = supabase.storage.from('tracks').getPublicUrl(normalPath).data.publicUrl;
 
                         // Upload Extended Track (if any)
@@ -224,7 +227,10 @@
                         if (extendedFile) {
                             const extendedPath = `${user.id}/${Date.now()}_ext_${extendedFile.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
                             const { error: extendedError } = await supabase.storage.from('tracks').upload(extendedPath, extendedFile);
-                            if (extendedError) throw extendedError;
+                            if (extendedError) {
+                                console.error("Storage upload error (extended):", extendedError);
+                                throw new Error("Storage Upload (Extended): " + extendedError.message);
+                            }
                             extendedUrl = supabase.storage.from('tracks').getPublicUrl(extendedPath).data.publicUrl;
                         }
 
@@ -239,7 +245,10 @@
                             status: 'pending'
                         });
 
-                        if (dbError) throw dbError;
+                        if (dbError) {
+                            console.error("Database insert error:", dbError);
+                            throw new Error("Database Insert: " + dbError.message);
+                        }
 
                         alert('Your track has been submitted for review successfully!');
                         window.location.href = 'profile.html';
