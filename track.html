@@ -327,12 +327,17 @@
         <!-- Right: Artist Card -->
         <div>
             <div class="artist-card">
-                <div class="artist-card-header">
-                    <div class="artist-avatar-md" id="artist-avatar">?</div>
-                    <div>
-                        <div class="artist-card-name" id="artist-card-name">Artist</div>
-                        <div class="artist-card-sub">TarabBladi Artist</div>
+                <div class="artist-card-header" style="justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <div class="artist-avatar-md" id="artist-avatar">?</div>
+                        <div>
+                            <div class="artist-card-name" id="artist-card-name">Artist</div>
+                            <div class="artist-card-sub">TarabBladi Artist</div>
+                        </div>
                     </div>
+                    <button class="action-btn" id="follow-btn" onclick="handleFollow()" style="padding: 6px 16px; font-size: 0.8rem; border-radius: 20px;">
+                        Follow
+                    </button>
                 </div>
                 <div class="artist-card-bio" id="artist-bio">Loading artist info...</div>
             </div>
@@ -355,6 +360,8 @@
 
     let currentUser = null;
     let liked = false;
+    let following = false;
+    let artistId = null;
     let waveformBars = []; // store bar heights for redraw
 
     // --- Load track ---
@@ -433,11 +440,24 @@
         // Draw waveform after a short delay to ensure canvas is sized
         setTimeout(drawWaveform, 150);
 
-        // Like state
+        // Like and Follow state
+        artistId = sub.user_id;
+        
+        // Hide follow button if it's their own track
+        if (currentUser && currentUser.id === artistId) {
+            document.getElementById('follow-btn').style.display = 'none';
+        }
+
         if (currentUser) {
             const { data: like } = await _sb.from('track_likes').select('id')
                 .eq('user_id', currentUser.id).eq('track_id', trackId).maybeSingle();
             if (like) setLiked(true);
+
+            if (artistId && currentUser.id !== artistId) {
+                const { data: follow } = await _sb.from('user_follows').select('id')
+                    .eq('follower_id', currentUser.id).eq('following_id', artistId).maybeSingle();
+                if (follow) setFollowing(true);
+            }
         }
     }
 
@@ -556,6 +576,35 @@
         } else {
             await _sb.from('track_likes').insert({ user_id: currentUser.id, track_id: trackId });
             setLiked(true);
+        }
+    }
+
+    // --- Follow ---
+    function setFollowing(state) {
+        following = state;
+        const btn = document.getElementById('follow-btn');
+        if (state) {
+            btn.innerHTML = 'Following';
+            btn.style.background = 'rgba(255,255,255,0.1)';
+            btn.style.color = '#fff';
+            btn.style.borderColor = 'transparent';
+        } else {
+            btn.innerHTML = 'Follow';
+            btn.style.background = 'transparent';
+            btn.style.color = '#ccc';
+            btn.style.borderColor = 'rgba(255,255,255,0.1)';
+        }
+    }
+
+    async function handleFollow() {
+        if (!currentUser) { window.location.href = 'login.html'; return; }
+        if (!artistId) return;
+        if (following) {
+            await _sb.from('user_follows').delete().eq('follower_id', currentUser.id).eq('following_id', artistId);
+            setFollowing(false);
+        } else {
+            await _sb.from('user_follows').insert({ follower_id: currentUser.id, following_id: artistId });
+            setFollowing(true);
         }
     }
 
