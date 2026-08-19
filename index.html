@@ -357,12 +357,12 @@
         window.playAudio = playAudio;
 
         async function toggleLike(trackId, btnElement) {
-            const sessionData = sessionStorage.getItem('tarab_user');
-            if (!sessionData) {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
                 alert("Please log in to like this track.");
                 return;
             }
-            const user = JSON.parse(sessionData);
+            const user = session.user;
 
             btnElement.disabled = true;
             const { data: existingLike } = await supabase
@@ -386,12 +386,12 @@
         window.toggleLike = toggleLike;
 
         async function openCommentPrompt(trackId) {
-            const sessionData = sessionStorage.getItem('tarab_user');
-            if (!sessionData) {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
                 alert("Please log in to comment.");
                 return;
             }
-            const user = JSON.parse(sessionData);
+            const user = session.user;
 
             const content = prompt("Leave a comment on this track:");
             if (!content || !content.trim()) return;
@@ -453,9 +453,9 @@
                 trackList.innerHTML = '';
 
                 let userLikes = [];
-                const sessionData = sessionStorage.getItem('tarab_user');
-                if (sessionData) {
-                    const user = JSON.parse(sessionData);
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session) {
+                    const user = session.user;
                     const { data: likes } = await supabase
                         .from('track_likes')
                         .select('track_id')
