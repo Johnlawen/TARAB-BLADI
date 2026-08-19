@@ -7,7 +7,9 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 async function check() {
     const { data, error } = await supabase
         .from('track_submissions')
-        .select('*');
+        .select('*')
+        .eq('status', 'pending')
+        .order('created_at', { ascending: false });
         
     console.log("Error:", error);
     console.log("Data:", data);

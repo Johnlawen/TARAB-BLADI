@@ -164,79 +164,86 @@
         window.playAudio = playAudio;
 
         async function initDashboard() {
-            // Fetch pending tracks without the strict profile join
-            const { data: submissions, error } = await supabase
-                .from('track_submissions')
-                .select('*')
-                .eq('status', 'pending')
-                .order('created_at', { ascending: false });
+            try {
+                // Fetch pending tracks without the strict profile join
+                const { data: submissions, error } = await supabase
+                    .from('track_submissions')
+                    .select('*')
+                    .eq('status', 'pending')
+                    .order('created_at', { ascending: false });
 
-            if (error) {
-                console.error("Error fetching submissions:", error);
-                alert("Error fetching submissions: " + error.message);
-                return;
-            }
-
-            // Fetch profiles separately
-            if (submissions && submissions.length > 0) {
-                const userIds = submissions.map(s => s.user_id);
-                const { data: profiles } = await supabase
-                    .from('profiles')
-                    .select('id, display_name')
-                    .in('id', userIds);
+                if (error) {
+                    console.error("Error fetching submissions:", error);
+                    alert("Database Error fetching submissions: " + error.message);
+                    return;
+                }
                 
-                submissions.forEach(sub => {
-                    const profile = profiles?.find(p => p.id === sub.user_id);
-                    sub.profiles = profile ? { display_name: profile.display_name } : null;
-                });
-            }
+                alert("Debug: Browser successfully fetched " + (submissions ? submissions.length : 0) + " pending tracks from database!");
 
-            // Update stats (mock logic for approved/declined for now, just actual pending)
-            const pendingEl = document.querySelectorAll('.stat-value')[0];
-            if (pendingEl) pendingEl.innerText = submissions.length;
-
-            const trackList = document.querySelector('.track-list');
-            
-            if (submissions.length > 0) {
-                trackList.innerHTML = ''; // Clear empty state
-                window.allSubmissions = submissions; // Save globally for the modal
-                
-                submissions.forEach(sub => {
-                    const row = document.createElement('div');
-                    row.className = 'track-row admin-track-row';
-                    row.dataset.id = sub.id;
+                // Fetch profiles separately
+                if (submissions && submissions.length > 0) {
+                    const userIds = submissions.map(s => s.user_id);
+                    const { data: profiles, error: profileError } = await supabase
+                        .from('profiles')
+                        .select('id, display_name')
+                        .in('id', userIds);
                     
-                    const audioId = 'audio_' + sub.id;
-                    const artistName = sub.profiles ? sub.profiles.display_name : 'Unknown Artist';
+                    submissions.forEach(sub => {
+                        const profile = profiles?.find(p => p.id === sub.user_id);
+                        sub.profiles = profile ? { display_name: profile.display_name } : null;
+                    });
+                }
 
-                    row.innerHTML = `
-                        <div class="track-cover-play">
-                            <div style="width: 100px; height: 100px; background: #222; display: flex; align-items: center; justify-content: center; color: #e2b764;">
-                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                // Update stats (mock logic for approved/declined for now, just actual pending)
+                const pendingEl = document.querySelectorAll('.stat-value')[0];
+                if (pendingEl) pendingEl.innerText = submissions.length;
+
+                const trackList = document.querySelector('.track-list');
+                
+                if (submissions.length > 0) {
+                    trackList.innerHTML = ''; // Clear empty state
+                    window.allSubmissions = submissions; // Save globally for the modal
+                    
+                    submissions.forEach(sub => {
+                        const row = document.createElement('div');
+                        row.className = 'track-row admin-track-row';
+                        row.dataset.id = sub.id;
+                        
+                        const audioId = 'audio_' + sub.id;
+                        const artistName = sub.profiles ? sub.profiles.display_name : 'Unknown Artist';
+
+                        row.innerHTML = `
+                            <div class="track-cover-play">
+                                <div style="width: 100px; height: 100px; background: #222; display: flex; align-items: center; justify-content: center; color: #e2b764;">
+                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                                </div>
+                                <button class="play-btn" onclick="playAudio('${audioId}', this)">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                                </button>
+                                <audio id="${audioId}" src="${sub.normal_track_url}"></audio>
                             </div>
-                            <button class="play-btn" onclick="playAudio('${audioId}', this)">
-                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                            </button>
-                            <audio id="${audioId}" src="${sub.normal_track_url}"></audio>
-                        </div>
-                        <div class="track-info">
-                            <h4>${sub.title}</h4>
-                            <p>Submitted by: ${artistName}</p>
-                            <p style="font-size: 0.75rem; color: #888; margin-top: 4px;">Notes: ${sub.reviewer_notes || 'None'}</p>
-                            ${sub.extended_track_url ? `<a href="${sub.extended_track_url}" target="_blank" style="font-size: 0.75rem; color: #e2b764; text-decoration: none;">Download Extended Mix</a>` : ''}
-                        </div>
-                        <div class="track-meta">${sub.genre}</div>
-                        <div class="track-waveform">
-                            <div class="waveform-mockup"></div>
-                        </div>
-                        <div class="track-actions admin-actions">
-                            <button class="btn-primary" onclick="openAdminModal('${sub.id}')" style="padding: 8px 16px; font-size: 0.8rem;">
-                                REVIEW TRACK
-                            </button>
-                        </div>
-                    `;
-                    trackList.appendChild(row);
-                });
+                            <div class="track-info">
+                                <h4>${sub.title}</h4>
+                                <p>Submitted by: ${artistName}</p>
+                                <p style="font-size: 0.75rem; color: #888; margin-top: 4px;">Notes: ${sub.reviewer_notes || 'None'}</p>
+                                ${sub.extended_track_url ? `<a href="${sub.extended_track_url}" target="_blank" style="font-size: 0.75rem; color: #e2b764; text-decoration: none;">Download Extended Mix</a>` : ''}
+                            </div>
+                            <div class="track-meta">${sub.genre}</div>
+                            <div class="track-waveform">
+                                <div class="waveform-mockup"></div>
+                            </div>
+                            <div class="track-actions admin-actions">
+                                <button class="btn-primary" onclick="openAdminModal('${sub.id}')" style="padding: 8px 16px; font-size: 0.8rem;">
+                                    REVIEW TRACK
+                                </button>
+                            </div>
+                        `;
+                        trackList.appendChild(row);
+                    });
+                }
+            } catch (err) {
+                console.error("Critical JS Error in Dashboard:", err);
+                alert("Critical Error rendering dashboard: " + err.message);
             }
         }
         
