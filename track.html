@@ -344,6 +344,7 @@
         </div>
     </div>
 
+    <script type="module" src="auth.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
     // --- Supabase setup ---
@@ -470,7 +471,11 @@
             audio.play().then(function() {
                 setPlayIcon(false);
                 animateWaveform();
-            }).catch(function(e) { console.error('Play error:', e); });
+            }).catch(function(e) { 
+                console.error('Play error:', e); 
+                setPlayIcon(true);
+                alert("Error playing track. The audio file might be missing or unsupported.");
+            });
         } else {
             audio.pause();
             setPlayIcon(true);
@@ -571,10 +576,12 @@
     async function handleLike() {
         if (!currentUser) { window.location.href = 'login.html'; return; }
         if (liked) {
-            await _sb.from('track_likes').delete().eq('user_id', currentUser.id).eq('track_id', trackId);
+            const { error } = await _sb.from('track_likes').delete().eq('user_id', currentUser.id).eq('track_id', trackId);
+            if (error) { alert("Error removing like: " + error.message); return; }
             setLiked(false);
         } else {
-            await _sb.from('track_likes').insert({ user_id: currentUser.id, track_id: trackId });
+            const { error } = await _sb.from('track_likes').insert({ user_id: currentUser.id, track_id: trackId });
+            if (error) { alert("Error saving like: " + error.message); return; }
             setLiked(true);
         }
     }

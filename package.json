@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/Johnlawen/TARAB-BLADI#readme",
   "dependencies": {
-    "@supabase/supabase-js": "^2.112.3"
+    "@supabase/supabase-js": "^2.112.3",
+    "puppeteer": "^25.8.0"
   }
 }
