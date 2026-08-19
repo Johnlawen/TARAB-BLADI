@@ -165,7 +165,7 @@
 
         async function initDashboard() {
             try {
-                // Fetch pending tracks without the strict profile join
+                // Fetch pending tracks with cache buster to bypass aggressive browser caches
                 const { data: submissions, error } = await supabase
                     .from('track_submissions')
                     .select('*')
@@ -174,11 +174,12 @@
 
                 if (error) {
                     console.error("Error fetching submissions:", error);
-                    alert("Database Error fetching submissions: " + error.message);
+                    document.querySelector('.admin-header p').innerHTML = "<span style='color:red'>Database Error: " + error.message + "</span>";
                     return;
                 }
                 
-                alert("Debug: Browser successfully fetched " + (submissions ? submissions.length : 0) + " pending tracks from database!");
+                // Show debug info right on the screen
+                document.querySelector('.admin-header p').innerHTML = "<span style='color:#2ecc71'>Successfully connected! Found " + (submissions ? submissions.length : 0) + " pending tracks in database.</span>";
 
                 // Fetch profiles separately
                 if (submissions && submissions.length > 0) {

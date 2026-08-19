@@ -42,7 +42,7 @@
             // Password updated to the secure one
             if (pwd === 'john99mn') {
                 sessionStorage.setItem('tarab_admin_auth', 'true');
-                window.location.href = 'dashboard-panel-secure.html';
+                window.location.href = 'dashboard-panel-secure.html?v=' + new Date().getTime();
             } else {
                 document.getElementById('admin-error-msg').style.display = 'block';
             }
