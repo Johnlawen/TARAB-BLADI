@@ -339,187 +339,215 @@
         </div>
     </div>
 
-    <script type="module" src="auth.js"></script>
-    <script type="module">
-        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-        const supabase = createClient('https://ktrmgxixbycdapcmwcih.supabase.co', 'sb_publishable_H01ibabwtUj6FLR-zie7Xw_74dDAmsP');
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+    // --- Supabase setup ---
+    const _sb = supabase.createClient('https://ktrmgxixbycdapcmwcih.supabase.co', 'sb_publishable_H01ibabwtUj6FLR-zie7Xw_74dDAmsP');
 
-        const params = new URLSearchParams(window.location.search);
-        const trackId = params.get('id');
-        const fromPage = params.get('from') || 'browse';
+    const params = new URLSearchParams(window.location.search);
+    const trackId = params.get('id');
+    const fromPage = params.get('from') || 'browse';
 
-        // Set back link
-        document.getElementById('back-link').href = fromPage === 'charts' ? 'charts.html' : 'browse.html';
-        document.getElementById('back-link').querySelector('svg').nextSibling.textContent = ' Back to ' + (fromPage === 'charts' ? 'Charts' : 'Browse');
+    // Back link
+    const backLink = document.getElementById('back-link');
+    if (fromPage === 'charts') { backLink.href = 'charts.html'; backLink.childNodes[1].textContent = ' Back to Charts'; }
+    else { backLink.href = 'browse.html'; backLink.childNodes[1].textContent = ' Back to Browse'; }
 
-        if (!trackId) {
-            document.querySelector('.track-hero-title').textContent = 'Track not found';
+    let currentUser = null;
+    let liked = false;
+    let waveformBars = []; // store bar heights for redraw
+
+    // --- Load track ---
+    async function init() {
+        const { data: { user } } = await _sb.auth.getUser();
+        currentUser = user;
+        if (!trackId) { document.getElementById('track-title').textContent = 'Track not found'; return; }
+        await loadTrack();
+    }
+
+    async function loadTrack() {
+        const { data: sub, error } = await _sb
+            .from('track_submissions')
+            .select('*, profiles(display_name, bio, avatar_url)')
+            .eq('id', trackId)
+            .single();
+
+        if (error || !sub) { document.getElementById('track-title').textContent = 'Track not found'; return; }
+
+        const artistName = sub.profiles?.display_name || 'Unknown Artist';
+        const dateStr = new Date(sub.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+        document.getElementById('track-title').textContent = sub.title;
+        document.title = sub.title + ' - TarabBladi';
+        document.getElementById('artist-name').textContent = artistName;
+        document.getElementById('meta-genre').innerHTML = '<strong>' + sub.genre + '</strong>';
+        document.getElementById('meta-date').textContent = 'Released: ' + dateStr;
+        document.getElementById('info-genre').textContent = sub.genre;
+        document.getElementById('info-date').textContent = dateStr;
+
+        if (sub.cover_url) {
+            document.getElementById('cover-art').innerHTML = '<img src="' + sub.cover_url + '" alt="Cover">';
+        }
+
+        document.getElementById('download-btn').href = sub.normal_track_url;
+        if (sub.extended_track_url) {
+            const eb = document.getElementById('extended-btn');
+            eb.href = sub.extended_track_url;
+            eb.style.display = 'flex';
+        }
+
+        document.getElementById('artist-card-name').textContent = artistName;
+        document.getElementById('artist-bio').textContent = sub.profiles?.bio || 'TarabBladi artist. Check out their latest tracks.';
+        const initials = artistName.split(' ').map(function(w){ return w[0]; }).join('').toUpperCase().slice(0,2);
+        const avatarEl = document.getElementById('artist-avatar');
+        if (sub.profiles?.avatar_url) {
+            avatarEl.innerHTML = '<img src="' + sub.profiles.avatar_url + '" alt="' + artistName + '">';
         } else {
-            loadTrack();
+            avatarEl.textContent = initials;
         }
 
-        let trackData = null;
-        let currentUser = null;
+        // Set audio source
+        const audio = document.getElementById('main-audio');
+        audio.src = sub.normal_track_url;
+        audio.load();
 
-        async function loadTrack() {
-            const { data: { user } } = await supabase.auth.getUser();
-            currentUser = user;
+        audio.addEventListener('loadedmetadata', function() { updateTimeDisplay(); });
+        audio.addEventListener('timeupdate', onTimeUpdate);
+        audio.addEventListener('ended', function() { setPlayIcon(true); });
 
-            const { data: sub, error } = await supabase
-                .from('track_submissions')
-                .select('*, profiles(display_name, bio, avatar_url)')
-                .eq('id', trackId)
-                .single();
+        // Draw waveform after a short delay to ensure canvas is sized
+        setTimeout(drawWaveform, 100);
 
-            if (error || !sub) {
-                document.getElementById('track-title').textContent = 'Track not found';
-                return;
-            }
-
-            trackData = sub;
-            const artistName = sub.profiles?.display_name || 'Unknown Artist';
-            const dateStr = new Date(sub.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-
-            // Hero info
-            document.getElementById('track-title').textContent = sub.title;
-            document.title = sub.title + ' - TarabBladi';
-            document.getElementById('artist-name').textContent = artistName;
-            document.getElementById('meta-genre').innerHTML = `<strong>${sub.genre}</strong>`;
-            document.getElementById('meta-date').textContent = 'Released: ' + dateStr;
-            document.getElementById('info-genre').textContent = sub.genre;
-            document.getElementById('info-date').textContent = dateStr;
-
-            // Cover art
-            if (sub.cover_url) {
-                document.getElementById('cover-art').innerHTML = `<img src="${sub.cover_url}" alt="Cover">`;
-            }
-
-            // Download buttons
-            document.getElementById('download-btn').href = sub.normal_track_url;
-            if (sub.extended_track_url) {
-                const eb = document.getElementById('extended-btn');
-                eb.href = sub.extended_track_url;
-                eb.style.display = 'flex';
-            }
-
-            // Artist card
-            document.getElementById('artist-card-name').textContent = artistName;
-            document.getElementById('artist-card-name').textContent = artistName;
-            const bio = sub.profiles?.bio || 'TarabBladi artist. Check out their latest tracks on the platform.';
-            document.getElementById('artist-bio').textContent = bio;
-
-            const initials = artistName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
-            const avatarEl = document.getElementById('artist-avatar');
-            if (sub.profiles?.avatar_url) {
-                avatarEl.innerHTML = `<img src="${sub.profiles.avatar_url}" alt="${artistName}">`;
-            } else {
-                avatarEl.textContent = initials;
-            }
-
-            // Audio
-            const audio = document.getElementById('main-audio');
-            audio.src = sub.normal_track_url;
-            audio.addEventListener('loadedmetadata', () => {
-                updateTimeDisplay();
-                drawWaveform();
-            });
-            audio.addEventListener('timeupdate', onTimeUpdate);
-            audio.addEventListener('ended', onEnded);
-
-            // Like state
-            if (currentUser) {
-                const { data: like } = await supabase.from('track_likes').select('id').eq('user_id', currentUser.id).eq('track_id', trackId).single();
-                if (like) setLiked(true);
-            }
+        // Like state
+        if (currentUser) {
+            const { data: like } = await _sb.from('track_likes').select('id')
+                .eq('user_id', currentUser.id).eq('track_id', trackId).maybeSingle();
+            if (like) setLiked(true);
         }
+    }
 
-        // ---- Player ----
-        window.togglePlay = function() {
-            const audio = document.getElementById('main-audio');
-            if (audio.paused) { audio.play(); setPlayIcon(false); }
-            else { audio.pause(); setPlayIcon(true); }
-        };
-
-        function setPlayIcon(showPlay) {
-            document.getElementById('play-icon').innerHTML = showPlay
-                ? '<path d="M8 5v14l11-7z"/>'
-                : '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+    // --- Player ---
+    function togglePlay() {
+        const audio = document.getElementById('main-audio');
+        if (!audio.src || audio.src === window.location.href) { return; }
+        if (audio.paused) {
+            audio.play().then(function() {
+                setPlayIcon(false);
+                animateWaveform();
+            }).catch(function(e) { console.error('Play error:', e); });
+        } else {
+            audio.pause();
+            setPlayIcon(true);
         }
+    }
 
-        function onTimeUpdate() {
-            const audio = document.getElementById('main-audio');
-            const pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
-            document.getElementById('waveform-progress').style.width = pct + '%';
-            document.getElementById('waveform-cursor').style.left = pct + '%';
-            updateTimeDisplay();
+    function setPlayIcon(showPlay) {
+        document.getElementById('play-icon').innerHTML = showPlay
+            ? '<path d="M8 5v14l11-7z"/>'
+            : '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+    }
+
+    function onTimeUpdate() {
+        const audio = document.getElementById('main-audio');
+        const pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
+        document.getElementById('waveform-progress').style.width = pct + '%';
+        document.getElementById('waveform-cursor').style.left = pct + '%';
+        updateTimeDisplay();
+        // Recolor waveform to show played vs unplayed
+        redrawWaveformProgress(pct / 100);
+    }
+
+    function updateTimeDisplay() {
+        const audio = document.getElementById('main-audio');
+        document.getElementById('time-display').textContent = fmt(audio.currentTime) + ' / ' + fmt(audio.duration || 0);
+    }
+
+    function fmt(s) {
+        if (!s || isNaN(s)) return '0:00';
+        var m = Math.floor(s / 60), sec = Math.floor(s % 60);
+        return m + ':' + String(sec).padStart(2, '0');
+    }
+
+    function setVolume(v) { document.getElementById('main-audio').volume = parseFloat(v); }
+
+    // Waveform click to seek
+    document.getElementById('waveform-wrapper').addEventListener('click', function(e) {
+        const audio = document.getElementById('main-audio');
+        if (!audio.duration) return;
+        const rect = this.getBoundingClientRect();
+        const pct = (e.clientX - rect.left) / rect.width;
+        audio.currentTime = pct * audio.duration;
+    });
+
+    // --- Waveform Drawing ---
+    function drawWaveform() {
+        const canvas = document.getElementById('waveform-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.offsetWidth || canvas.parentElement.offsetWidth;
+        canvas.height = canvas.offsetHeight || 80;
+        const W = canvas.width, H = canvas.height;
+        waveformBars = [];
+        const barW = 3, gap = 1, total = Math.floor(W / (barW + gap));
+        for (let i = 0; i < total; i++) {
+            waveformBars.push(Math.random() * 0.7 + 0.1);
         }
+        renderWaveform(ctx, W, H, 0);
+    }
 
-        function onEnded() { setPlayIcon(true); }
-
-        function updateTimeDisplay() {
-            const audio = document.getElementById('main-audio');
-            document.getElementById('time-display').textContent = fmt(audio.currentTime) + ' / ' + fmt(audio.duration || 0);
+    function renderWaveform(ctx, W, H, progress) {
+        ctx.clearRect(0, 0, W, H);
+        const barW = 3, gap = 1;
+        for (let i = 0; i < waveformBars.length; i++) {
+            const h = waveformBars[i] * H;
+            const x = i * (barW + gap);
+            const played = (i / waveformBars.length) < progress;
+            ctx.fillStyle = played ? 'rgba(226,183,100,0.9)' : 'rgba(226,183,100,0.25)';
+            ctx.fillRect(x, (H - h) / 2, barW, h);
         }
+    }
 
-        function fmt(s) {
-            if (!s || isNaN(s)) return '0:00';
-            const m = Math.floor(s / 60), sec = Math.floor(s % 60);
-            return m + ':' + String(sec).padStart(2, '0');
+    function redrawWaveformProgress(progress) {
+        const canvas = document.getElementById('waveform-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        renderWaveform(ctx, canvas.width, canvas.height, progress);
+    }
+
+    var _animFrame = null;
+    function animateWaveform() {
+        const audio = document.getElementById('main-audio');
+        if (!audio || audio.paused) { _animFrame = null; return; }
+        const pct = audio.duration ? audio.currentTime / audio.duration : 0;
+        redrawWaveformProgress(pct);
+        _animFrame = requestAnimationFrame(animateWaveform);
+    }
+
+    // --- Like ---
+    function setLiked(state) {
+        liked = state;
+        const btn = document.getElementById('like-btn');
+        btn.classList.toggle('liked', state);
+        btn.innerHTML = state
+            ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="#e74c3c" stroke="#e74c3c" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> Liked'
+            : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> Like';
+    }
+
+    async function handleLike() {
+        if (!currentUser) { window.location.href = 'login.html'; return; }
+        if (liked) {
+            await _sb.from('track_likes').delete().eq('user_id', currentUser.id).eq('track_id', trackId);
+            setLiked(false);
+        } else {
+            await _sb.from('track_likes').insert({ user_id: currentUser.id, track_id: trackId });
+            setLiked(true);
         }
+    }
 
-        window.setVolume = function(v) {
-            document.getElementById('main-audio').volume = v;
-        };
-
-        // Waveform click to seek
-        document.getElementById('waveform-wrapper').addEventListener('click', function(e) {
-            const audio = document.getElementById('main-audio');
-            if (!audio.duration) return;
-            const rect = this.getBoundingClientRect();
-            const pct = (e.clientX - rect.left) / rect.width;
-            audio.currentTime = pct * audio.duration;
-        });
-
-        // Draw animated waveform bars
-        function drawWaveform() {
-            const canvas = document.getElementById('waveform-canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
-            const W = canvas.width, H = canvas.height;
-            const bars = Math.floor(W / 4);
-            ctx.clearRect(0, 0, W, H);
-            for (let i = 0; i < bars; i++) {
-                const h = (Math.random() * 0.65 + 0.1) * H;
-                const x = i * 4;
-                ctx.fillStyle = 'rgba(226,183,100,0.35)';
-                ctx.fillRect(x, (H - h) / 2, 2.5, h);
-            }
-        }
-
-        // ---- Like ----
-        let liked = false;
-        function setLiked(state) {
-            liked = state;
-            const btn = document.getElementById('like-btn');
-            btn.classList.toggle('liked', state);
-            btn.innerHTML = state
-                ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="#e74c3c" stroke="#e74c3c" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> Liked`
-                : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> Like`;
-        }
-
-        window.handleLike = async function() {
-            if (!currentUser) { window.location.href = 'login.html'; return; }
-            if (liked) {
-                await supabase.from('track_likes').delete().eq('user_id', currentUser.id).eq('track_id', trackId);
-                setLiked(false);
-            } else {
-                await supabase.from('track_likes').insert({ user_id: currentUser.id, track_id: trackId });
-                setLiked(true);
-            }
-        };
-
+    // Start
+    document.addEventListener('DOMContentLoaded', function() {
         drawWaveform();
+        init();
+    });
     </script>
 </body>
 </html>

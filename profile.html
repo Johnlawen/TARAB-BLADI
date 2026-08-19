@@ -286,5 +286,29 @@
 
 <script type="module" src="auth.js"></script>
 <script type="module" src="profile.js"></script>
+
+<script>
+// Standalone tab switcher
+document.addEventListener('DOMContentLoaded', function() {
+    var VIEWS = ['all-view','popular-view','tracks-view','posts-view','albums-view','playlists-view'];
+    function showView(id) {
+        VIEWS.forEach(function(v) {
+            var el = document.getElementById(v);
+            if (el) el.style.display = (v === id) ? 'block' : 'none';
+        });
+    }
+    var tabs = document.querySelectorAll('.sc-tabs-left .sc-tab');
+    tabs.forEach(function(tab) {
+        tab.addEventListener('click', function(e) {
+            e.preventDefault();
+            tabs.forEach(function(t) { t.classList.remove('active'); });
+            tab.classList.add('active');
+            showView(tab.getAttribute('data-target'));
+        });
+    });
+    var active = document.querySelector('.sc-tabs-left .sc-tab.active');
+    if (active) showView(active.getAttribute('data-target'));
+});
+</script>
 </body>
 </html>
