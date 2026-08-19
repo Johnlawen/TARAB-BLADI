@@ -124,11 +124,14 @@
         </div>
     </div>
     
-    <script>
+    <script type="module">
+        import { supabase } from './auth.js';
+
         function logoutAdmin() {
             sessionStorage.removeItem('tarab_admin_auth');
             window.location.href = 'index.html';
         }
+        window.logoutAdmin = logoutAdmin;
 
         let currentAudio = null;
         let currentPlayBtn = null;
@@ -158,15 +161,11 @@
                 btnElement.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
             }
         }
+        window.playAudio = playAudio;
 
         document.addEventListener('DOMContentLoaded', async () => {
-            if (!window.supabase) {
-                console.error("Supabase not loaded");
-                return;
-            }
-
             // Fetch pending tracks without the strict profile join
-            const { data: submissions, error } = await window.supabase
+            const { data: submissions, error } = await supabase
                 .from('track_submissions')
                 .select('*')
                 .eq('status', 'pending')
@@ -181,7 +180,7 @@
             // Fetch profiles separately
             if (submissions && submissions.length > 0) {
                 const userIds = submissions.map(s => s.user_id);
-                const { data: profiles } = await window.supabase
+                const { data: profiles } = await supabase
                     .from('profiles')
                     .select('id, display_name')
                     .in('id', userIds);
@@ -253,11 +252,13 @@
             
             document.getElementById('admin-action-modal').style.display = 'flex';
         }
+        window.openAdminModal = openAdminModal;
 
         function closeAdminModal() {
             document.getElementById('admin-action-modal').style.display = 'none';
             currentSubmission = null;
         }
+        window.closeAdminModal = closeAdminModal;
 
         document.getElementById('modal-btn-accept').addEventListener('click', async () => {
             if (!currentSubmission) return;
@@ -268,7 +269,7 @@
             const newGenre = document.getElementById('modal-track-genre').value;
             const message = document.getElementById('modal-track-message').value;
 
-            const { error } = await window.supabase.from('track_submissions').update({ 
+            const { error } = await supabase.from('track_submissions').update({ 
                 status: 'approved',
                 genre: newGenre
             }).eq('id', currentSubmission.id);
@@ -282,10 +283,10 @@
 
             // Insert Notification (fire and forget for now, but handle safely)
             try {
-                await window.supabase.from('notifications').insert({
+                await supabase.from('notifications').insert({
                     user_id: currentSubmission.user_id,
                     title: 'Track Approved!',
-                    message: \`Your track "\${currentSubmission.title}" has been approved.\${message ? ' Reviewer note: ' + message : ''}\`,
+                    message: `Your track "${currentSubmission.title}" has been approved.${message ? ' Reviewer note: ' + message : ''}`,
                     type: 'success'
                 });
             } catch (e) { console.warn("Could not insert notification", e); }
@@ -309,7 +310,7 @@
             btn.innerText = 'Declining...';
             btn.disabled = true;
 
-            const { error } = await window.supabase.from('track_submissions').update({ 
+            const { error } = await supabase.from('track_submissions').update({ 
                 status: 'rejected'
             }).eq('id', currentSubmission.id);
 
@@ -321,10 +322,10 @@
             }
 
             try {
-                await window.supabase.from('notifications').insert({
+                await supabase.from('notifications').insert({
                     user_id: currentSubmission.user_id,
                     title: 'Track Declined',
-                    message: \`Your track "\${currentSubmission.title}" was declined. Reason: \${message}\`,
+                    message: `Your track "${currentSubmission.title}" was declined. Reason: ${message}`,
                     type: 'error'
                 });
             } catch (e) { console.warn("Could not insert notification", e); }
