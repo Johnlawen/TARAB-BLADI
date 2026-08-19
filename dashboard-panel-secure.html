@@ -163,7 +163,7 @@
         }
         window.playAudio = playAudio;
 
-        document.addEventListener('DOMContentLoaded', async () => {
+        async function initDashboard() {
             // Fetch pending tracks without the strict profile join
             const { data: submissions, error } = await supabase
                 .from('track_submissions')
@@ -238,7 +238,10 @@
                     trackList.appendChild(row);
                 });
             }
-        });
+        }
+        
+        // Modules run after DOM is ready, so we can just call it
+        initDashboard();
 
         let currentSubmission = null;
 
