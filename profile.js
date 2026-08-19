@@ -20,6 +20,8 @@ async function initProfile() {
 
 function setupTabs() {
     const tabs = document.querySelectorAll('.sc-tabs-left .sc-tab');
+    const views = ['all-view', 'popular-view', 'tracks-view', 'posts-view', 'albums-view', 'playlists-view'];
+
     tabs.forEach(tab => {
         tab.addEventListener('click', (e) => {
             e.preventDefault();
@@ -27,10 +29,10 @@ function setupTabs() {
             tab.classList.add('active');
             
             const targetId = tab.dataset.target;
-            if (targetId) {
-                document.getElementById('tracks-view').style.display = targetId === 'tracks-view' ? 'block' : 'none';
-                document.getElementById('posts-view').style.display = targetId === 'posts-view' ? 'block' : 'none';
-            }
+            views.forEach(v => {
+                const el = document.getElementById(v);
+                if(el) el.style.display = (v === targetId) ? 'block' : 'none';
+            });
         });
     });
 }
@@ -106,7 +108,9 @@ window.openCommentPrompt = async function(trackId) {
 };
 
 async function loadUserTracks() {
-    const trackContainer = document.querySelector('#tracks-view .sc-track-list');
+    const allContainer = document.querySelector('#all-view .sc-track-list');
+    const popularContainer = document.querySelector('#popular-view .sc-track-list');
+    const tracksContainer = document.querySelector('#tracks-view .sc-track-list');
     
     try {
         const { data: submissions, error } = await supabase
@@ -119,7 +123,7 @@ async function loadUserTracks() {
         if (error) throw error;
 
         if (!submissions || submissions.length === 0) {
-            trackContainer.innerHTML = \`
+            const emptyHtml = `
                 <div class="empty-state" style="text-align: center; padding: 50px; color: #888; width: 100%;">
                     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 15px; opacity: 0.5;">
                         <path d="M9 18V5l12-2v13"></path>
@@ -129,7 +133,10 @@ async function loadUserTracks() {
                     <h2 style="font-size: 1.5rem; margin-bottom: 10px; color: #fff;">No tracks available</h2>
                     <p>You have not uploaded any tracks that have been approved yet.</p>
                 </div>
-            \`;
+            `;
+            if (allContainer) allContainer.innerHTML = emptyHtml;
+            if (popularContainer) popularContainer.innerHTML = emptyHtml;
+            if (tracksContainer) tracksContainer.innerHTML = emptyHtml;
             return;
         }
 
@@ -153,53 +160,67 @@ async function loadUserTracks() {
             userLikes = likes.map(l => l.track_id);
         }
 
-        trackContainer.innerHTML = '';
+        if (allContainer) allContainer.innerHTML = '';
+        if (popularContainer) popularContainer.innerHTML = '';
+        if (tracksContainer) tracksContainer.innerHTML = '';
+
+        // Determine popular tracks (sort by likes descending)
+        // Since we don't have global like count easily here, we will just use the same array for now
+        // For a full implementation, you'd query a view or count likes.
 
         submissions.forEach(sub => {
-            const row = document.createElement('div');
-            row.className = 'track-row';
-            
-            const audioId = 'audio_prof_' + sub.id;
             const isLiked = userLikes.includes(sub.id);
             const likeIcon = isLiked 
                 ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="#e74c3c" stroke="#e74c3c" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> Liked'
                 : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> Like';
             const likeColor = isLiked ? '#e74c3c' : '#fff';
 
-            row.innerHTML = \`
-                <div class="track-cover-play">
-                    <div style="width: 100px; height: 100px; background: #222; display: flex; align-items: center; justify-content: center; color: #e2b764;">
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
-                    </div>
-                    <button class="play-btn" onclick="playAudio('\${audioId}', this)">
-                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                    </button>
-                    <audio id="\${audioId}" src="\${sub.normal_track_url}"></audio>
-                </div>
-                <div class="track-info" style="flex: 2;">
-                    <h4>\${sub.title}</h4>
-                    <p>\${artistName}</p>
-                    <div style="margin-top: 8px; display: flex; gap: 15px;">
-                        <button onclick="toggleLike('\${sub.id}', this)" style="background: transparent; border: none; color: \${likeColor}; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 0.85rem;">
-                            \${likeIcon}
+            const buildRow = (suffix) => {
+                const audioId = 'audio_prof_' + sub.id + '_' + suffix;
+                const row = document.createElement('div');
+                row.className = 'track-row';
+                row.innerHTML = `
+                    <div class="track-cover-play">
+                        <div style="width: 100px; height: 100px; background: #222; display: flex; align-items: center; justify-content: center; color: #e2b764;">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                        </div>
+                        <button class="play-btn" onclick="playAudio('${audioId}', this)">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                         </button>
-                        <button onclick="openCommentPrompt('\${sub.id}')" style="background: transparent; border: none; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 0.85rem;">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-                            Comment
-                        </button>
+                        <audio id="${audioId}" src="${sub.normal_track_url}"></audio>
                     </div>
-                </div>
-                <div class="track-meta" style="flex: 1;">\${sub.genre}</div>
-                <div class="track-actions">
-                    \${sub.extended_track_url ? \`<a href="\${sub.extended_track_url}" target="_blank" class="btn-primary" style="padding: 8px 16px; font-size: 0.8rem; text-decoration: none;">EXTENDED</a>\` : \`<a href="\${sub.normal_track_url}" target="_blank" class="btn-outline" style="padding: 8px 16px; font-size: 0.8rem; text-decoration: none;">DOWNLOAD</a>\`}
-                </div>
-            \`;
-            trackContainer.appendChild(row);
+                    <div class="track-info" style="flex: 2;">
+                        <h4>${sub.title}</h4>
+                        <p>${artistName}</p>
+                        <div style="margin-top: 8px; display: flex; gap: 15px;">
+                            <button onclick="toggleLike('${sub.id}', this)" style="background: transparent; border: none; color: ${likeColor}; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 0.85rem;">
+                                ${likeIcon}
+                            </button>
+                            <button onclick="openCommentPrompt('${sub.id}')" style="background: transparent; border: none; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 0.85rem;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                                Comment
+                            </button>
+                        </div>
+                    </div>
+                    <div class="track-meta" style="flex: 1;">${sub.genre}</div>
+                    <div class="track-actions">
+                        ${sub.extended_track_url ? \`<a href="${sub.extended_track_url}" target="_blank" class="btn-primary" style="padding: 8px 16px; font-size: 0.8rem; text-decoration: none;">EXTENDED</a>\` : \`<a href="${sub.normal_track_url}" target="_blank" class="btn-outline" style="padding: 8px 16px; font-size: 0.8rem; text-decoration: none;">DOWNLOAD</a>\`}
+                    </div>
+                `;
+                return row;
+            };
+
+            if (allContainer) allContainer.appendChild(buildRow('all'));
+            if (popularContainer) popularContainer.appendChild(buildRow('pop'));
+            if (tracksContainer) tracksContainer.appendChild(buildRow('trk'));
         });
 
     } catch (err) {
         console.error("Error loading user tracks:", err);
-        trackContainer.innerHTML = '<div style="color:red; text-align:center; padding: 20px;">Failed to load tracks.</div>';
+        const errHtml = '<div style="color:red; text-align:center; padding: 20px;">Failed to load tracks.</div>';
+        if (allContainer) allContainer.innerHTML = errHtml;
+        if (popularContainer) popularContainer.innerHTML = errHtml;
+        if (tracksContainer) tracksContainer.innerHTML = errHtml;
     }
 }
 

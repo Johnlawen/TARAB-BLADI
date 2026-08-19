@@ -88,12 +88,12 @@
     <!-- Navigation Tabs -->
     <div class="sc-tabs-bar">
         <div class="sc-tabs-left">
-            <a href="#" class="sc-tab active" data-target="tracks-view">All</a>
-            <a href="#" class="sc-tab" data-target="tracks-view">Popular tracks</a>
+            <a href="#" class="sc-tab active" data-target="all-view">All</a>
+            <a href="#" class="sc-tab" data-target="popular-view">Popular tracks</a>
             <a href="#" class="sc-tab" data-target="tracks-view">Tracks</a>
             <a href="#" class="sc-tab" data-target="posts-view">Posts</a>
-            <a href="#" class="sc-tab" data-target="tracks-view">Albums</a>
-            <a href="#" class="sc-tab" data-target="tracks-view">Playlists</a>
+            <a href="#" class="sc-tab" data-target="albums-view">Albums</a>
+            <a href="#" class="sc-tab" data-target="playlists-view">Playlists</a>
         </div>
         <div class="sc-tabs-right">
             <button class="sc-btn sc-btn-gold">
@@ -126,10 +126,11 @@
     <!-- Main Content -->
     <main class="sc-main-content">
         <!-- Left Column: Spotlight -->
-        <div class="sc-spotlight-col" id="tracks-view">
+        <!-- All View -->
+        <div class="sc-spotlight-col" id="all-view">
             <div class="sc-section-header">
-                <h2>Spotlight (5/5)</h2>
-                <button class="sc-btn-small">Edit Spotlight</button>
+                <h2>All</h2>
+                <!-- no button -->
             </div>
 
             <div class="sc-track-list">
@@ -139,10 +140,26 @@
                         <circle cx="6" cy="18" r="3"></circle>
                         <circle cx="18" cy="16" r="3"></circle>
                     </svg>
-                    <h2 style="font-size: 1.5rem; margin-bottom: 10px; color: #fff;">No tracks available</h2>
-                    <p>There are no songs uploaded yet.</p>
+                    <h2 style="font-size: 1.5rem; margin-bottom: 10px; color: #fff;">No content available</h2>
+                    <p>There are no items to show yet.</p>
                 </div>
 </div>
+        </div>
+
+        <!-- Popular Tracks View -->
+        <div class="sc-spotlight-col" id="popular-view" style="display: none;">
+            <div class="sc-section-header">
+                <h2>Popular tracks</h2>
+            </div>
+            <div class="sc-track-list"></div>
+        </div>
+
+        <!-- Tracks View -->
+        <div class="sc-spotlight-col" id="tracks-view" style="display: none;">
+            <div class="sc-section-header">
+                <h2>Tracks</h2>
+            </div>
+            <div class="sc-track-list"></div>
         </div>
 
         <div class="sc-spotlight-col" id="posts-view" style="display: none;">
@@ -152,6 +169,24 @@
             <div id="profile-post-list" class="blog-post-list" style="margin-top: 20px;">
                 <!-- User posts will be injected here -->
                 <div style="color:#888;">Loading your posts...</div>
+            </div>
+        </div>
+
+        <div class="sc-spotlight-col" id="albums-view" style="display: none;">
+            <div class="sc-section-header">
+                <h2>Albums</h2>
+            </div>
+            <div class="empty-state" style="text-align: center; padding: 50px; color: #888;">
+                <p>No albums available.</p>
+            </div>
+        </div>
+
+        <div class="sc-spotlight-col" id="playlists-view" style="display: none;">
+            <div class="sc-section-header">
+                <h2>Playlists</h2>
+            </div>
+            <div class="empty-state" style="text-align: center; padding: 50px; color: #888;">
+                <p>No playlists available.</p>
             </div>
         </div>
 
