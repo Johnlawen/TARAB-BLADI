@@ -150,6 +150,12 @@
             </div>
 
             <div class="form-group">
+                <label for="track-cover">Track Cover Image (Optional)</label>
+                <input type="file" id="track-cover" accept="image/*">
+                <span class="help-text">Upload a square image (e.g., 500x500) for the track cover.</span>
+            </div>
+
+            <div class="form-group">
                 <label for="normal-track">Normal Track (Audio File) *</label>
                 <input type="file" id="normal-track" accept=".mp3,.wav,audio/*" required>
                 <span class="help-text">Please upload a <strong>high-quality MP3 (320kbps)</strong> or WAV file.</span>
@@ -198,6 +204,7 @@
                         
                         const normalFile = document.getElementById('normal-track').files[0];
                         const extendedFile = document.getElementById('extended-track').files[0];
+                        const coverFile = document.getElementById('track-cover').files[0];
 
                         if (normalFile && !(normalFile.name.toLowerCase().endsWith('.wav') || normalFile.name.toLowerCase().endsWith('.mp3'))) {
                             alert("Only high-quality MP3 or WAV files are allowed for the normal track!");
@@ -234,6 +241,18 @@
                             extendedUrl = supabase.storage.from('tracks').getPublicUrl(extendedPath).data.publicUrl;
                         }
 
+                        // Upload Cover Image (if any)
+                        let coverUrl = null;
+                        if (coverFile) {
+                            const coverPath = `${user.id}/${Date.now()}_cover_${coverFile.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+                            const { error: coverError } = await supabase.storage.from('tracks').upload(coverPath, coverFile);
+                            if (coverError) {
+                                console.error("Storage upload error (cover):", coverError);
+                                throw new Error("Storage Upload (Cover): " + coverError.message);
+                            }
+                            coverUrl = supabase.storage.from('tracks').getPublicUrl(coverPath).data.publicUrl;
+                        }
+
                         // Insert into database
                         const { error: dbError } = await supabase.from('track_submissions').insert({
                             user_id: user.id,
@@ -241,6 +260,7 @@
                             genre: genre,
                             normal_track_url: normalUrl,
                             extended_track_url: extendedUrl,
+                            cover_url: coverUrl,
                             reviewer_notes: notes,
                             status: 'pending'
                         });
