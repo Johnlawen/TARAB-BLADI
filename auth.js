@@ -300,7 +300,7 @@ if (signupForm) {
         submitBtn.innerText = 'Signing up...';
         
         const { data, error } = await supabase.auth.signUp({
-            email: emailInput.value,
+            email: emailInput.value.trim().toLowerCase(),
             password: passwordInput.value,
             options: {
                 data: {
@@ -339,7 +339,7 @@ if (loginForm) {
         submitBtn.innerText = 'Logging in...';
         
         const { data, error } = await supabase.auth.signInWithPassword({
-            email: emailInput.value,
+            email: emailInput.value.trim().toLowerCase(),
             password: passwordInput.value
         });
         
