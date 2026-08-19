@@ -18,23 +18,28 @@ async function initProfile() {
     setupTabs();
 }
 
+const ALL_VIEWS = ['all-view', 'popular-view', 'tracks-view', 'posts-view', 'albums-view', 'playlists-view'];
+
+function showView(targetId) {
+    ALL_VIEWS.forEach(v => {
+        const el = document.getElementById(v);
+        if (el) el.style.display = (v === targetId) ? 'block' : 'none';
+    });
+}
+
 function setupTabs() {
     const tabs = document.querySelectorAll('.sc-tabs-left .sc-tab');
-    const views = ['all-view', 'popular-view', 'tracks-view', 'posts-view', 'albums-view', 'playlists-view'];
-
     tabs.forEach(tab => {
         tab.addEventListener('click', (e) => {
             e.preventDefault();
             tabs.forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
-            
-            const targetId = tab.dataset.target;
-            views.forEach(v => {
-                const el = document.getElementById(v);
-                if(el) el.style.display = (v === targetId) ? 'block' : 'none';
-            });
+            showView(tab.dataset.target);
         });
     });
+    // Ensure the initially-active tab view is shown correctly
+    const activeTab = document.querySelector('.sc-tabs-left .sc-tab.active');
+    if (activeTab) showView(activeTab.dataset.target);
 }
 
 let currentAudio = null;
