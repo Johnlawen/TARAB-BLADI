@@ -87,7 +87,7 @@ async function checkUser() {
                                 </div>
                             </div>
                         </div>
-                        <a href="profile.html" target="_blank" style="display: block; padding: 12px; text-align: center; color: #e2b764; text-decoration: none; font-size: 0.85rem; font-weight: 600; border-top: 1px solid #333;">View All Notifications</a>
+                        <a href="profile.html" style="display: block; padding: 12px; text-align: center; color: #e2b764; text-decoration: none; font-size: 0.85rem; font-weight: 600; border-top: 1px solid #333;">View All Notifications</a>
                     </div>
                 </div>
                 <div class="nav-user-menu-container" style="position: relative; display: flex; align-items: center;">
@@ -98,7 +98,7 @@ async function checkUser() {
                     <div class="nav-dropdown" style="display: none; position: absolute; top: 100%; right: 70px; background: #111; border: 1px solid #333; border-radius: 8px; padding: 8px 0; margin-top: 15px; min-width: 150px; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
                         <a href="profile.html" style="display: block; padding: 10px 20px; color: #fff; text-decoration: none; font-size: 0.9rem; transition: background 0.2s;" onmouseover="this.style.background='#222'" onmouseout="this.style.background='transparent'">Profile</a>
                         <a href="likes.html" style="display: block; padding: 10px 20px; color: #fff; text-decoration: none; font-size: 0.9rem; transition: background 0.2s;" onmouseover="this.style.background='#222'" onmouseout="this.style.background='transparent'">My Likes</a>
-                        <a href="settings.html" target="_blank" style="display: block; padding: 10px 20px; color: #fff; text-decoration: none; font-size: 0.9rem; transition: background 0.2s;" onmouseover="this.style.background='#222'" onmouseout="this.style.background='transparent'">Settings</a>
+                        <a href="settings.html" style="display: block; padding: 10px 20px; color: #fff; text-decoration: none; font-size: 0.9rem; transition: background 0.2s;" onmouseover="this.style.background='#222'" onmouseout="this.style.background='transparent'">Settings</a>
                     </div>
                     <button id="logout-btn" style="background: transparent; border: none; color: #e2b764; cursor: pointer; margin-left: 16px; font-size: 0.85rem; font-weight: 600;">LOGOUT</button>
                 </div>
