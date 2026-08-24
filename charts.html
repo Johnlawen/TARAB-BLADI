@@ -128,19 +128,19 @@
                     </div>
 
                     <div class="charts-tbody">
-<div class="empty-state" style="text-align: center; padding: 50px; color: #888; width: 100%;">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 15px; opacity: 0.5;">
-                        <path d="M9 18V5l12-2v13"></path>
-                        <circle cx="6" cy="18" r="3"></circle>
-                        <circle cx="18" cy="16" r="3"></circle>
-                    </svg>
-                    <h2 style="font-size: 1.5rem; margin-bottom: 10px; color: #fff;">No tracks available</h2>
-                    <p>There are no songs uploaded yet.</p>
-                </div>
-</div>
+                        <div class="empty-state" style="text-align: center; padding: 50px; color: #888; width: 100%;">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 15px; opacity: 0.5;">
+                                <path d="M9 18V5l12-2v13"></path>
+                                <circle cx="6" cy="18" r="3"></circle>
+                                <circle cx="18" cy="16" r="3"></circle>
+                            </svg>
+                            <h2 style="font-size: 1.5rem; margin-bottom: 10px; color: #fff;">No tracks available</h2>
+                            <p>There are no songs uploaded yet.</p>
+                        </div>
+                    </div>
 
                     <div class="center-btn" style="margin-top: 32px;">
-                        <button class="btn-outline-gold-small" style="padding: 10px 24px;" onclick="window.open('charts.html', '_blank')">VIEW FULL CHARTS</button>
+                        <button id="view-full-charts-btn" class="btn-outline-gold-small" style="padding: 10px 24px;" onclick="window.location.href='charts-full.html?tab=top-100'">VIEW FULL CHARTS</button>
                     </div>
                 </div>
             </div>
@@ -158,16 +158,16 @@
                     </div>
 
                     <div class="rising-list">
-<div class="empty-state" style="text-align: center; padding: 50px; color: #888; width: 100%;">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 15px; opacity: 0.5;">
-                        <path d="M9 18V5l12-2v13"></path>
-                        <circle cx="6" cy="18" r="3"></circle>
-                        <circle cx="18" cy="16" r="3"></circle>
-                    </svg>
-                    <h2 style="font-size: 1.5rem; margin-bottom: 10px; color: #fff;">No tracks available</h2>
-                    <p>There are no songs uploaded yet.</p>
-                </div>
-</div>
+                        <div class="empty-state" style="text-align: center; padding: 50px; color: #888; width: 100%;">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 15px; opacity: 0.5;">
+                                <path d="M9 18V5l12-2v13"></path>
+                                <circle cx="6" cy="18" r="3"></circle>
+                                <circle cx="18" cy="16" r="3"></circle>
+                            </svg>
+                            <h2 style="font-size: 1.5rem; margin-bottom: 10px; color: #fff;">No tracks available</h2>
+                            <p>There are no songs uploaded yet.</p>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="premium-card tall">
@@ -202,7 +202,7 @@
                 </svg>
                 <div class="f-text">
                     <h5>HIGH QUALITY</h5>
-                    <p>WAV & MP3 320kbps</p>
+                    <p>WAV &amp; MP3 320kbps</p>
                 </div>
             </div>
             <div class="feature-divider"></div>
@@ -213,7 +213,7 @@
                 </svg>
                 <div class="f-text">
                     <h5>DJ FRIENDLY</h5>
-                    <p>Clean edits & intros</p>
+                    <p>Clean edits &amp; intros</p>
                 </div>
             </div>
             <div class="feature-divider"></div>
@@ -231,6 +231,7 @@
             </div>
         </div>
     </div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script type="module" src="auth.js"></script>
 <script type="module">
@@ -287,31 +288,36 @@
         const headerDesc = document.querySelector('.charts-hero-content p');
         const emptyStateText = document.querySelector('.charts-tbody .empty-state h2');
         const emptyStateSub = document.querySelector('.charts-tbody .empty-state p');
+        const viewFullBtn = document.getElementById('view-full-charts-btn');
 
         const tabData = {
             'TOP 100': {
                 title: 'CHARTS',
                 desc: 'Discover the top 100<br>tracks by DJs this week.',
                 emptyMsg: 'No tracks available',
-                emptySub: 'There are no songs uploaded yet.'
+                emptySub: 'There are no songs uploaded yet.',
+                slug: 'top-100'
             },
             'TOP DOWNLOADS': {
                 title: 'TOP DOWNLOADS',
                 desc: 'The most downloaded tracks<br>by our community.',
                 emptyMsg: 'No downloaded tracks',
-                emptySub: 'Tracks will appear here once they are downloaded.'
+                emptySub: 'Tracks will appear here once they are downloaded.',
+                slug: 'top-downloads'
             },
             'TRENDING': {
                 title: 'TRENDING',
                 desc: 'What DJs are playing<br>right now.',
                 emptyMsg: 'No trending tracks',
-                emptySub: 'Trending data is currently unavailable.'
+                emptySub: 'Trending data is currently unavailable.',
+                slug: 'trending'
             },
             'NEW RELEASES': {
                 title: 'NEW RELEASES',
                 desc: 'The freshest drops<br>and exclusive edits.',
                 emptyMsg: 'No new releases',
-                emptySub: 'Check back soon for new tracks.'
+                emptySub: 'Check back soon for new tracks.',
+                slug: 'new-releases'
             }
         };
 
@@ -324,13 +330,18 @@
 
                 // Get tab text (ignoring SVG)
                 const tabText = tab.innerText.trim();
-                
+
                 // Update content based on tab
                 if (tabData[tabText]) {
                     if (headerTitle) headerTitle.innerHTML = tabData[tabText].title;
                     if (headerDesc) headerDesc.innerHTML = tabData[tabText].desc;
                     if (emptyStateText) emptyStateText.innerText = tabData[tabText].emptyMsg;
                     if (emptyStateSub) emptyStateSub.innerText = tabData[tabText].emptySub;
+
+                    // Update VIEW FULL CHARTS button destination
+                    if (viewFullBtn) {
+                        viewFullBtn.onclick = () => window.location.href = `charts-full.html?tab=${tabData[tabText].slug}`;
+                    }
                 }
             });
         });

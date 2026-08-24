@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full Charts - TarabBladi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="browse-page">
+    <!-- Navigation -->
+    <nav class="navbar solid-nav">
+        <div class="nav-container">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="8" width="2" height="8" fill="#e2b764" />
+                    <rect x="6" y="4" width="2" height="16" fill="#e2b764" />
+                    <rect x="10" y="10" width="2" height="4" fill="#e2b764" />
+                    <rect x="14" y="2" width="2" height="20" fill="#e2b764" />
+                    <rect x="18" y="6" width="2" height="12" fill="#e2b764" />
+                </svg>
+                <div class="logo-text">
+                    <span class="brand-name">TARABBLADI</span>
+                    <span class="brand-sub">ARABIC DJ RECORD POOL</span>
+                </div>
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="index.html">HOME</a></li>
+                <li><a href="browse.html">BROWSE</a></li>
+                <li><a href="charts.html" class="active">CHARTS</a></li>
+                <li><a href="blog.html">BLOG</a></li>
+                <li><a href="about.html">ABOUT US</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <!-- Nav actions will be populated by auth.js -->
+            </div>
+        </div>
+    </nav>
+
+    <div class="browse-wrapper">
+        <!-- Back Button -->
+        <div style="max-width: 1000px; margin: 20px auto 0; width: 100%;">
+            <a href="charts.html" style="display: inline-flex; align-items: center; gap: 8px; color: #888; text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: color 0.2s;" onmouseover="this.style.color='#e2b764'" onmouseout="this.style.color='#888'">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Back to Charts
+            </a>
+        </div>
+
+        <!-- Page Header -->
+        <header class="browse-header" style="text-align: center; margin-bottom: 40px; margin-top: 20px;">
+            <h1 id="page-title" style="display: flex; align-items: center; justify-content: center; gap: 12px;"></h1>
+            <p id="page-desc"></p>
+        </header>
+
+        <div class="browse-layout" style="justify-content: center;">
+            <!-- Main Content -->
+            <main class="browse-main" style="flex: 0 0 100%; max-width: 1000px;">
+                <!-- Track Table -->
+                <div style="background: #111; border: 1px solid #1a1a1a; border-radius: 12px; overflow: hidden;">
+                    <div class="charts-th" style="padding: 14px 20px;">
+                        <div class="th-rank">#</div>
+                        <div class="th-track">TRACK</div>
+                        <div class="th-genre">GENRE</div>
+                        <div class="th-bpm">BPM</div>
+                        <div class="th-key">KEY</div>
+                        <div class="th-downloads">DLs</div>
+                    </div>
+
+                    <div id="full-charts-list">
+                        <div class="empty-state" style="text-align: center; padding: 60px; color: #888;">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 15px; opacity: 0.5;">
+                                <path d="M9 18V5l12-2v13"></path>
+                                <circle cx="6" cy="18" r="3"></circle>
+                                <circle cx="18" cy="16" r="3"></circle>
+                            </svg>
+                            <h2 style="font-size: 1.5rem; margin-bottom: 10px; color: #fff;">Loading tracks...</h2>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="auth.js"></script>
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+        const supabase = createClient('https://ktrmgxixbycdapcmwcih.supabase.co', 'sb_publishable_H01ibabwtUj6FLR-zie7Xw_74dDAmsP');
+
+        const tabConfigs = {
+            'top-100': {
+                title: 'TOP 100',
+                desc: 'Discover the top 100 tracks by DJs this week.',
+                icon: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>`,
+                orderBy: { column: 'created_at', ascending: false },
+                limit: 100
+            },
+            'top-downloads': {
+                title: 'TOP DOWNLOADS',
+                desc: 'The most downloaded tracks by our community.',
+                icon: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>`,
+                orderBy: { column: 'created_at', ascending: false },
+                limit: 100
+            },
+            'trending': {
+                title: 'TRENDING',
+                desc: 'What DJs are playing right now.',
+                icon: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>`,
+                orderBy: { column: 'created_at', ascending: false },
+                limit: 100
+            },
+            'new-releases': {
+                title: 'NEW RELEASES',
+                desc: 'The freshest drops and exclusive edits.',
+                icon: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e2b764" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`,
+                orderBy: { column: 'created_at', ascending: false },
+                limit: 100
+            }
+        };
+
+        function getTabFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('tab') || 'top-100';
+        }
+
+        async function loadTracks() {
+            const tab = getTabFromURL();
+            const config = tabConfigs[tab] || tabConfigs['top-100'];
+
+            // Update page metadata
+            document.title = `${config.title} - TarabBladi`;
+            document.getElementById('page-title').innerHTML = `${config.icon} ${config.title}`;
+            document.getElementById('page-desc').textContent = config.desc;
+
+            const list = document.getElementById('full-charts-list');
+
+            const { data: submissions, error } = await supabase
+                .from('track_submissions')
+                .select('*, profiles(display_name)')
+                .eq('status', 'approved')
+                .order(config.orderBy.column, { ascending: config.orderBy.ascending })
+                .limit(config.limit);
+
+            if (error || !submissions || submissions.length === 0) {
+                list.innerHTML = `
+                    <div style="text-align: center; padding: 60px; color: #888;">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 15px; opacity: 0.5;">
+                            <path d="M9 18V5l12-2v13"></path>
+                            <circle cx="6" cy="18" r="3"></circle>
+                            <circle cx="18" cy="16" r="3"></circle>
+                        </svg>
+                        <h2 style="font-size: 1.5rem; margin-bottom: 10px; color: #fff;">No tracks available</h2>
+                        <p>Check back later for new tracks.</p>
+                    </div>`;
+                return;
+            }
+
+            list.innerHTML = '';
+            submissions.forEach((sub, i) => {
+                const artistName = sub.profiles?.display_name || 'Unknown Artist';
+                const coverHtml = sub.cover_url
+                    ? `<img src="${sub.cover_url}" style="width:40px;height:40px;object-fit:cover;border-radius:4px;" alt="Cover">`
+                    : `<div style="width:40px;height:40px;background:#222;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#e2b764;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></div>`;
+
+                const row = document.createElement('div');
+                row.className = 'charts-row';
+                row.style.cssText = 'display:grid;grid-template-columns:50px 1fr auto auto auto auto;align-items:center;padding:12px 20px;border-bottom:1px solid #1a1a1a;cursor:pointer;transition:background 0.2s;';
+                row.onmouseover = () => row.style.background = '#161616';
+                row.onmouseout = () => row.style.background = '';
+                row.onclick = () => window.location.href = `track.html?id=${sub.id}&from=charts`;
+                row.innerHTML = `
+                    <div style="font-weight:700;color:#e2b764;font-size:1rem;">${i + 1}</div>
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        ${coverHtml}
+                        <div>
+                            <div style="font-weight:600;font-size:0.9rem;">${sub.title}</div>
+                            <div style="font-size:0.8rem;color:#888;">${artistName}</div>
+                        </div>
+                    </div>
+                    <div style="font-size:0.8rem;color:#aaa;padding:0 16px;"><span style="background:#1a1a1a;border:1px solid #333;padding:3px 10px;border-radius:12px;">${sub.genre || '—'}</span></div>
+                    <div style="font-size:0.8rem;color:#888;padding:0 16px;">—</div>
+                    <div style="font-size:0.8rem;color:#888;padding:0 16px;">—</div>
+                    <div style="font-size:0.8rem;color:#e2b764;font-weight:600;">—</div>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        loadTracks();
+    </script>
+</body>
+
+</html>
